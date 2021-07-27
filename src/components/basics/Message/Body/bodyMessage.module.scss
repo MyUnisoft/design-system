@@ -1,0 +1,87 @@
+@import "../../../../assets/colors/colors.scss";
+
+.commentContainer {
+  padding: 14px 21px;
+}
+
+.mainComment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color .2s;
+  padding: 1px 10px;
+  margin-left: -10px;
+
+  .message {
+    flex-grow: 10;
+    overflow: auto;
+  }
+
+  .messageButton {
+    opacity: 1;
+    transition: opacity .1s;
+    font-size: 20px;
+    padding: 6px 0 6px 0;
+
+    /* to display button with & without reaction counter same size */
+    min-width: 30px;
+    justify-content: left;
+
+    &.inactiveReactions {
+      opacity: 0.15;
+      background-color: unset;
+    }
+
+    &.semiActiveReactions {
+      opacity: 0.45;
+      background-color: unset;
+    }
+
+    &.activeReactions {
+      opacity: 1;
+      background-color: unset;
+    }
+  }
+
+  &.highlightHover {
+    cursor: pointer;
+
+    &:hover {
+      background-color: $light-primary;
+    }
+  }
+}
+
+.reaction {
+  color: black;
+  font-size: 20px;
+  transform: translateY(-1px);
+}
+
+.historyComment {
+  background-color: $light-grey;
+}
+
+div.button {
+  display: flex;
+  justify-content: space-between;
+
+  border-radius: 0;
+  padding: 12px;
+
+  text-align: left;
+
+  &:hover {
+    background-color: $light-primary;
+  }
+
+  .editButton {
+    margin: -6px;
+  }
+}
+
+.content {
+  > p {
+    margin: 0;
+  }
+}

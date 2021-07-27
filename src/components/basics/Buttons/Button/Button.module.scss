@@ -1,0 +1,21 @@
+@import "../../../../assets/colors/colors.scss";
+
+@mixin color($color) {
+  &.text {
+    color: $color;
+  }
+
+  &.contained {
+    background-color: $color;
+    color: white;
+  }
+
+  &.outlined {
+    border-color: $color;
+    color: $color;
+  }
+}
+
+button.error {
+  @include color($color-error);
+}

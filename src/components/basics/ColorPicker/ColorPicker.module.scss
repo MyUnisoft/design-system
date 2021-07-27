@@ -1,0 +1,37 @@
+@import "../../../constants/layers.scss";
+
+.container {
+  position: relative;
+  z-index: $zIndexTextEditorColorPicker;
+}
+
+.colorPickerContainer {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+}
+
+.iconContainer {
+  border: 1px solid #F1F1F1;
+  cursor: pointer;
+  padding: 5px;
+  min-width: 25px;
+  height: 20px;
+  border-radius: 2px;
+  margin: 0 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  text-transform: capitalize;
+
+  &:hover {
+    box-shadow: 1px 1px 0px #BFBDBD;
+  }
+}
+
+.iconImg {
+  max-width: 100%;
+  max-height: 100%;
+}

@@ -1,0 +1,38 @@
+@import '../../../constants/layers.scss';
+
+.wrapperContainer {
+  border: solid 1px #d0d0d0;
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 0 0;
+}
+
+.toolbarContainer {
+  padding: 5px 6px;
+
+  :global .rdw-option-wrapper {
+    min-width: unset;
+  }
+}
+
+.editorContainer {
+  padding: 11px;
+  height: unset;
+}
+
+.textEditorWrapper {
+  position: relative;
+}
+.editorOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  opacity: 0.9;
+  z-index: $zIndexEditorOverlay;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

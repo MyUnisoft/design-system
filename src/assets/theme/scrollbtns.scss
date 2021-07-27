@@ -1,0 +1,21 @@
+// Scroll btns
+@keyframes scroll-buttons {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 56px;
+  }
+}
+
+.scrollButtons {
+  animation-name: scroll-buttons;
+  animation-duration: 250ms;
+
+  &:empty {
+    width: 0;
+
+    animation-direction: reverse;
+  }
+}

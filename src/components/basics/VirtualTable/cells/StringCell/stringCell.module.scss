@@ -1,0 +1,17 @@
+.disabled {
+  opacity: 0.5;
+}
+.input {
+  outline: none;
+  padding: 0;
+  border: none;
+  width: 100%;
+  background:transparent;
+}
+.stringCell {
+  padding-right: 4px;
+  padding-left: 4px;
+}
+.stringCell::before {
+  content: '\200B';
+}

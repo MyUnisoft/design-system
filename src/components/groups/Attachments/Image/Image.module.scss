@@ -1,0 +1,52 @@
+@import "../../../../assets/colors/colors.scss";
+
+.container {
+  position: relative;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+    width: auto;
+
+    opacity: 1;
+    transition: opacity ease 250ms;
+  }
+
+  .loader {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+  }
+
+  .errorMessage {
+    position: absolute;
+    top: 5px; bottom: 5px;
+    left: 5px; right: 5px;
+
+    display: flex;
+    flex-direction: column;
+
+    .icon {
+      color: $color-error !important;
+
+      margin: auto;
+    }
+
+    .label {
+      font-size: 10px;
+      text-align: center;
+      color: $light-500-grey;
+    }
+  }
+
+  &.loading, &.error {
+    img {
+      opacity: 0;
+    }
+  }
+
+  &.loading {
+    height: 30px;
+    width: 30px;
+  }
+}

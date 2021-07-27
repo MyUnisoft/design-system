@@ -1,0 +1,23 @@
+
+@import "../../../../../assets/colors/colors.scss";
+
+.select {
+  min-width: 60px;
+}
+
+div.input {
+ color: $light-500-grey;
+}
+
+.disabled ~ .icon {
+  fill: $grey;
+  cursor: not-allowed;
+}
+
+.selectCell {
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}

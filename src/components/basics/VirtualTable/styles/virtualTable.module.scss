@@ -1,0 +1,304 @@
+@import "../../../../assets/colors/colors.scss";
+$line-height: 32px;
+
+.GridRow {
+  display: flex;
+  flex-direction: row;
+}
+.defaultStyle {
+  outline: none;
+}
+
+.GridColumn {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding-bottom: $line-height;
+}
+.LeftSideGridContainer {
+  flex: 0 0 30px;
+}
+.LeftSideGrid {
+  overflow: hidden !important;
+}
+.HeaderGrid {
+  width: 100%;
+  overflow: hidden !important;
+  &_withBorders {
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+  }
+}
+.mb32{
+  margin-bottom: $line-height;
+}
+.BodyGrid {
+  width: 100%;
+  &_withBorders {
+    border: 1px solid black;
+  }
+}
+.selectionManager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  background: #f4f4f4;
+  padding: 5px 10px;
+  box-sizing: content-box;
+}
+.cell {
+  font-size: 12px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: $line-height;
+  letter-spacing: normal;
+  color: #000000;
+  overflow: hidden;
+  &_thumbnail {
+    line-height: 100px;
+    display: flex;
+  }
+  &_withGrid {
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    background-color: unset;
+  }
+  &_alignRight {
+    text-align: right;
+    input {
+      text-align: right;
+    }
+  }
+  &_alignLeft {
+    text-align: left;
+    input {
+      text-align: left;
+    }
+  }
+  &_alignCenter {
+    text-align: center;
+    input {
+      text-align: center;
+    }
+  }
+
+  &_align {
+    display: flex;
+    > div {
+      width: 100%;
+    }
+  }
+
+  &_alignVerticalCenter {
+    align-items: center;
+  }
+  &_alignVerticalBottom {
+    align-items: flex-end;
+  }
+  &_alignVerticalTop {
+    align-items: flex-start;
+  }
+}
+.headerCell {
+  padding-left: 4px;
+  padding-right: 4px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  overflow: hidden;
+  &_border {
+    grid-template-columns: repeat(auto-fill,minmax(100px,1fr));
+    border-left: 1px solid black;
+  }
+  &_wrap {
+    text-overflow: unset;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+  &_alignRight {
+    text-align: right;
+    input {
+      text-align: right;
+    }
+  }
+  &_alignLeft {
+    text-align: left;
+    input {
+      text-align: left;
+    }
+  }
+  &_alignCenter {
+    text-align: center;
+    input {
+      text-align: center;
+    }
+  }
+}
+.center {
+  text-align: center;
+}
+.hasSelectAll {
+  display: flex;
+  justify-content: center;
+}
+.cbCell {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  width: $line-height;
+}
+.checkbox {
+  position:absolute;
+}
+.disabled {
+  opacity: 0.3;
+}
+.container {
+  height: 14px;
+  width: 14px;
+  display: block;
+  position: relative;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  border-radius: 2px;
+  border: solid 1px #9b9b9b;
+}
+
+.container:hover input:not(:disabled) ~ .checkmark {
+  background-color: #bcf8f8;
+}
+
+.container input:checked ~ .checkmark {
+  background-color: #0bd1c4;
+  height: 14px;
+  width: 14px;
+  border: none;
+}
+
+.container input:disabled ~ .checkmark {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.container .checkmark:after {
+  left: 5px;
+  top: 1px;
+  width: 3px;
+  height: 7px;
+  border: solid white;
+  border-bottom-right-radius: 1px;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(40deg);
+}
+
+.addRow {
+  height: $line-height;
+  z-index: 10;
+  width: calc(100% + 30px);
+  background-color: #ddfafa;
+  font-size: 12px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  align-items: center;
+  color: #000000;
+  line-height: $line-height;
+  text-align: left;
+  padding-left: 10px;
+}
+.even {
+  background-color: #f4f4f4;
+}
+.odd {
+  background-color: #ffffff;
+}
+.lockRow {
+  background-color: #ebebeb;
+  display:flex;
+  align-items: center;
+  color: #9b9b9b;
+}
+.selectedRow {
+  background-color: #ddfafa;
+}
+.groupRow {
+  background-color: #0bd1d1;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.hoverRow {
+  background-color: #9ae8e8;
+}
+.displayNone {
+  display:none;
+}
+.onError {
+  background-color: #FFD8DF;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.footer_wrap {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-content: flex-end;
+  justify-content: flex-end;
+  width: 0;
+}
+
+.footer {
+  background-color: $light-500-primary;
+  font-weight: bold;
+  &_fakeCheckboxCell {
+    @extend .footer;
+    width: $line-height;
+  }
+}
+
+.footerCell {
+  padding-left: 8px;
+  padding-right: 10px;
+  &_noPadding {
+    padding: 0;
+  }
+}

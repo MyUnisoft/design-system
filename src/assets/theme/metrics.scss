@@ -1,0 +1,111 @@
+@import '../colors/colors.scss';
+
+@mixin scrollbars($color:$scrollbar-border-color-default) {
+  &::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+  }
+  &::-webkit-scrollbar-track:vertical {
+    background: $color;
+    border-left: 8px solid $color;
+    border-right: 8px solid $color;
+  }
+  ::-webkit-scrollbar-track:vertical {
+    background: $scrollbar-background;
+    border-left: 8px solid #f5f5f5;
+    border-right: 8px solid #f5f5f5;
+  }
+
+  &::-webkit-scrollbar-thumb:vertical {
+    background: #d0d0d0;
+    border-left: 8px solid $color;
+    border-right: 8px solid $color;
+  }
+  &::-webkit-scrollbar-track:horizontal {
+    background: $color;
+    border-top: 8px solid $color;
+    border-bottom: 8px solid $color;
+  }
+
+  &::-webkit-scrollbar-thumb:horizontal {
+    background: #d0d0d0;
+    border-top: 8px solid $color;
+    border-bottom: 8px solid $color;
+  }
+}
+
+@mixin mainScrollBar($color:$scrollbar-border-color-default){
+
+  ::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+  }
+  ::-webkit-scrollbar-track:vertical {
+    background: $color;
+    border-left: 8px solid $color;
+    border-right: 8px solid $color;
+  }
+
+  ::-webkit-scrollbar-thumb:vertical {
+    background: #d0d0d0;
+    border-left: 8px solid $color;
+    border-right: 8px solid $color;
+  }
+  ::-webkit-scrollbar-track:horizontal {
+    background: $color;
+    border-top: 8px solid $color;
+    border-bottom: 8px solid $color;
+  }
+
+  ::-webkit-scrollbar-thumb:horizontal {
+    background: #d0d0d0;
+    border-top: 8px solid $color;
+    border-bottom: 8px solid $color;
+  }
+}
+
+@mixin scrollbarsThin() {
+  ::-webkit-scrollbar {
+      width:  1px;
+      height: 1px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+      background: $black;
+  }
+
+  ::-webkit-scrollbar-track {
+      background: $scrollbar-background;
+  }
+
+  div {
+    scrollbar-face-color: $black;
+    scrollbar-track-color: $scrollbar-background;
+  }
+}
+
+// Adds space between the elements of a flex row container
+// must be used in the container class
+@mixin flex-row-spacing($spacing) {
+  $marge: $spacing / 2;
+
+  margin-left: -$marge;
+  margin-right: -$marge;
+
+  > * {
+    margin-left: $marge;
+    margin-right: $marge;
+  }
+}
+
+@mixin flex-column-spacing($spacing) {
+  $marge: $spacing / 2;
+
+  margin-top: -$marge;
+  margin-bottom: -$marge;
+
+  > * {
+    margin-top: $marge;
+    margin-bottom: $marge;
+  }
+}

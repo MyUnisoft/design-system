@@ -1,0 +1,46 @@
+.all {
+  color: #0bd1d1;
+  margin: 0 0 10px 0;
+
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item {
+  display: flex;
+  white-space:nowrap; 
+}
+
+.item:not(:last-child) {
+  margin-right: 15px;  // use RIGHT to left-align items
+}
+
+a {
+  text-decoration: none;
+  display: flex;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;  
+
+  color: inherit;
+  margin-right: 3px;
+}
+
+.all button > span {
+  margin: auto 3px;
+}
+
+.clip {
+  margin-right: 4px;
+}

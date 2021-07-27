@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: fit-content;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+}
+
+.contendEditing {
+  display: flex;
+}
