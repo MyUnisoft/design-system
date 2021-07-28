@@ -8,6 +8,12 @@ export default {
     comments: 'Comments',
     month: 'Month',
     refuse: 'Refuse',
-    send: 'Send'
+    send: 'Send',
+    status: {
+      accepted: 'Accepted',
+      text: 'Status',
+      refused: 'Refused'
+    },
+    total: 'Total'
   }
 }
