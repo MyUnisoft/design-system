@@ -55,7 +55,7 @@ const createAddRowGroup = group => ({
  */
 const isSortable = ({
   typeCell, sortable
-}) => sortable || SORTABLE_TYPES.includes(typeCell) || !typeCell;
+}) => sortable !== false && (sortable || SORTABLE_TYPES.includes(typeCell) || !typeCell);
 
 /**
  * Checks if the given `row` matches both the specific `filters`
