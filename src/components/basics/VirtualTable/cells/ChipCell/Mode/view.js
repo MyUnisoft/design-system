@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Chip } from "@material-ui/core";
 import useStyles from '../styles';
 
-const ViewChipCell = memo(({ data }) => {
+const ViewChipCell = memo(function ViewChipCell({ data }) {
   const styles = useStyles();
 
   const renderChips = Array.isArray(data) ? data.map((opt, index) => 

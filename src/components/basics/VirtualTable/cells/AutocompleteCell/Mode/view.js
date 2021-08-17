@@ -2,7 +2,7 @@ import React, { memo, useContext } from 'react';
 import PropTypes from 'prop-types';
 import VirtualTableContext from '../../../context';
 
-const AutocompleteView = memo(({ data, columnIndex }) => {
+const AutocompleteView = memo(function AutocompleteView({ data, columnIndex }) {
   const { config } = useContext(VirtualTableContext);
   const { columns = [] } = config;
   const { optionList = [] } = columns[columnIndex];
@@ -19,7 +19,7 @@ const AutocompleteView = memo(({ data, columnIndex }) => {
 });
 
 AutocompleteView.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.string.isRequired,
   columnIndex: PropTypes.number.isRequired
 };
 

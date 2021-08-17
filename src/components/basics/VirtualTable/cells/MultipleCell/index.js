@@ -6,7 +6,7 @@ import EditStringCell from '../StringCell/Mode/edit';
 import ViewMultipleCell from './Mode/view';
 
 // TODO add view and refactor components after back end will be done. Need to be finish before use
-const MultipleCell = React.memo(({ data, dataKey, columnIndex }) => {
+const MultipleCell = React.memo(function MultipleCell({ data, dataKey, columnIndex }) {
   return <AutoSelectorMode
     data={data}
     dataKey={dataKey}

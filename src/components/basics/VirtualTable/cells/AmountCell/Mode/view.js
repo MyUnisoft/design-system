@@ -18,12 +18,15 @@ function AmountViewCell({ data, columnIndex }){
 }
 
 AmountViewCell.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   columnIndex: PropTypes.number
 };
 
 AmountViewCell.defaultProps = {
-  data: {},
+  data: '',
   columnIndex: -1
 };
 

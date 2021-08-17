@@ -5,7 +5,7 @@ import AddChipCell from './Mode/add';
 import EditChipCell from './Mode/edit';
 import AutoSelectorMode from "../AutoSelectorMode";
 
-const ChipCell = memo(({ data, dataKey, columnIndex }) => {
+const ChipCell = memo(function ChipCell({ data, dataKey, columnIndex }) {
   return <AutoSelectorMode
     data={data}
     dataKey={dataKey}

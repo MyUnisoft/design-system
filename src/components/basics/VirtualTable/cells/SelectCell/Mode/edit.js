@@ -7,7 +7,7 @@ import VirtualTableContext from '../../../context';
 import I18n from '../../../../../../assets/I18n';
 import { NO_SELECT } from '../../../../../../constants/data';
 
-const EditSelectCell = memo(({ data, dataKey, columnIndex }) => {
+const EditSelectCell = memo(function EditSelectCell({ data, dataKey, columnIndex }) {
   const {
     config, send
   } = useContext(VirtualTableContext);
@@ -65,9 +65,9 @@ const EditSelectCell = memo(({ data, dataKey, columnIndex }) => {
 });
 
 EditSelectCell.propTypes = {
-  data: PropTypes.object.isRequired,
-  dataKey: PropTypes.string.isRequired,
-  columnIndex: PropTypes.number.isRequired
+  data: PropTypes.object,
+  dataKey: PropTypes.string,
+  columnIndex: PropTypes.number
 };
 
 export default EditSelectCell;

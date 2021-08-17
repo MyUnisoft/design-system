@@ -75,9 +75,9 @@ const EditDateCell = ({ data, dataKey, columnIndex }) => {
 };
 
 EditDateCell.propTypes = {
-  data: PropTypes.object.isRequired,
-  columnIndex: PropTypes.number.isRequired,
-  dataKey: PropTypes.object.isRequired
+  data: PropTypes.object,
+  columnIndex: PropTypes.number,
+  dataKey: PropTypes.string
 };
 
 export default EditDateCell;

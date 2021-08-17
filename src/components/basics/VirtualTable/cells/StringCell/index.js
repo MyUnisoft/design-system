@@ -5,7 +5,7 @@ import AddStringCell from './Mode/add';
 import EditStringCell from './Mode/edit';
 import AutoSelectorMode from "../AutoSelectorMode";
 
-const StringCell = React.memo(({ data, dataKey, columnIndex }) => {
+const StringCell = React.memo(function StringCell({ data, dataKey, columnIndex }) {
   return <AutoSelectorMode
     data={data}
     dataKey={dataKey}

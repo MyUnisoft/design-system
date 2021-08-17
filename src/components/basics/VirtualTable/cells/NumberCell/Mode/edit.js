@@ -8,7 +8,7 @@ import cx from 'classnames';
 import styles from '../numberCell.module.scss';
 import VirtualTableContext from '../../../context';
 
-const EditNumberCell = memo(({ data, dataKey, columnIndex }) => {
+const EditNumberCell = memo(function EditNumberCell({ data, dataKey, columnIndex }) {
   const { send, config } = useContext(VirtualTableContext);
   const {
     selectableRowKey,

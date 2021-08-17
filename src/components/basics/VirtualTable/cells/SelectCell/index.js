@@ -5,7 +5,7 @@ import AddSelectCell from './Mode/add';
 import EditSelectCell from './Mode/edit';
 import AutoSelectorMode from "../AutoSelectorMode";
 
-const SelectVTCell = memo(({ data, dataKey, columnIndex }) => {
+const SelectVTCell = memo(function SelectVTCell({ data, dataKey, columnIndex }) {
   return <AutoSelectorMode
     data={data}
     dataKey={dataKey}

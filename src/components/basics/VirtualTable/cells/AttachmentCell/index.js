@@ -5,7 +5,7 @@ import { useWindowState } from '../../../../../hooks/useWindowState';
 import Window from '../../../Window';
 import useStyles from './styles';
 
-const AttachmentCell = memo(({ data, dataKey }) => {
+const AttachmentCell = memo(function AttachmentCell({ data, dataKey }) {
   const { button } = useStyles();
   const overview = useWindowState();
   const [pjNumber, setPJNumber] = useState(0);

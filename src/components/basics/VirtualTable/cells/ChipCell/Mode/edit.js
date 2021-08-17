@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import VirtualTableContext from '../../../context';
 
-const EditChipCell = memo(({ data, dataKey, columnIndex }) => {
+const EditChipCell = memo(function EditChipCell({ data, dataKey, columnIndex }) {
   const {
     send,
     config

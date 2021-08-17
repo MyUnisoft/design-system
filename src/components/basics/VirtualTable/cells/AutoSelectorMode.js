@@ -4,7 +4,7 @@ import _get from 'lodash/get';
 import { ROW_TYPE } from '../utils';
 import VirtualTableContext from '../context';
 
-const AutoSelectorMode = memo(({ data, dataKey, columnIndex, viewComponent, editComponent, addComponent }) => {
+const AutoSelectorMode = memo(function AutoSelectorMode({ data, dataKey, columnIndex, viewComponent, editComponent, addComponent }) {
   const {
     state, context, config
   } = useContext(VirtualTableContext);
@@ -27,7 +27,7 @@ const AutoSelectorMode = memo(({ data, dataKey, columnIndex, viewComponent, edit
     // eslint-disable-next-line no-fallthrough
   default:
     return cloneElement(viewComponent, {
-      data: _get(data, dataKey, ''),
+      data: _get(data, dataKey),
       arrayData: Array.isArray(data[dataKey]) && data[dataKey],
       dataKey,
       columnIndex

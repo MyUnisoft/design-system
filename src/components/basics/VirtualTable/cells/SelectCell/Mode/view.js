@@ -2,7 +2,7 @@ import React, { useContext, memo } from 'react';
 import PropTypes from 'prop-types';
 import VirtualTableContext from '../../../context';
 
-const ViewSelectCell = memo(({ data, columnIndex }) => {
+const ViewSelectCell = memo(function ViewSelectCell({ data, columnIndex }) {
   const { config } = useContext(VirtualTableContext);
   const { columns = [] } = config;
   const { listData } = columns[columnIndex];
@@ -13,8 +13,13 @@ const ViewSelectCell = memo(({ data, columnIndex }) => {
 });
 
 ViewSelectCell.propTypes = {
-  data: PropTypes.object.isRequired,
-  columnIndex: PropTypes.number.isRequired
+  data: PropTypes.string,
+  columnIndex: PropTypes.number
+};
+
+ViewSelectCell.defaultProps = {
+  data: '',
+  columnIndex: -1
 };
 
 export default ViewSelectCell;

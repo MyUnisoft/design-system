@@ -8,7 +8,7 @@ import { FontIcon } from '../../../Icon';
 import { useWindowState } from '../../../../../hooks/useWindowState';
 import useStyles from './styles';
 
-const ThumbnailCell = memo(({ data, dataKey }) => {
+const ThumbnailCell = memo(function ThumbnailCell({ data, dataKey }) {
   const styles = useStyles();
   const [isHovered, setHover] = useState(false);
   const popup = useWindowState();

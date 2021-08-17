@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import useStyles from '../styles';
 
-const AutocompleteEdit = memo(({ data, dataKey, columnIndex }) => {
+const AutocompleteEdit = memo(function AutocompleteEdit({ data, dataKey, columnIndex }) {
   const [currentValue, setValue] = useState(data[dataKey]);
   const styles = useStyles();
   const { send, config } = useContext(VirtualTableContext);

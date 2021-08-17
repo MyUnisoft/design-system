@@ -69,9 +69,9 @@ const AddDateCell = ({ data, dataKey, columnIndex }) => {
 };
 
 AddDateCell.propTypes = {
-  data: PropTypes.object.isRequired,
-  columnIndex: PropTypes.number.isRequired,
-  dataKey: PropTypes.object.isRequired
+  data: PropTypes.object,
+  columnIndex: PropTypes.number,
+  dataKey: PropTypes.string
 };
 
 export default AddDateCell;

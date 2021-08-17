@@ -6,7 +6,7 @@ import styles from "../amount.module.scss";
 import cx from "classnames";
 import { formatNumberAndRoundMaxTwoDigits } from "../../../../../../helpers/number";
 
-const AmountEditCell = memo(({ data, dataKey, columnIndex }) => {
+const AmountEditCell = memo(function AmountEditCell({ data, dataKey, columnIndex }) {
 
   const { send, config } = useContext(VirtualTableContext);
   const {

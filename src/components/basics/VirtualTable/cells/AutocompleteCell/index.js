@@ -5,16 +5,18 @@ import AutocompleteView from './Mode/view';
 import AutocompleteEdit from './Mode/edit';
 import AutocompleteAdd from './Mode/add';
 
-const AutocompleteCell = memo(({ data, dataKey, columnIndex }) => (
-  <AutoSelectorMode
-    data={data}
-    dataKey={dataKey}
-    columnIndex={columnIndex}
-    viewComponent={<AutocompleteView />}
-    editComponent={<AutocompleteEdit />}
-    addComponent={<AutocompleteAdd />}
-  />
-));
+const AutocompleteCell = memo(function AutocompleteCell({ data, dataKey, columnIndex }) {
+  return(
+    <AutoSelectorMode
+      data={data}
+      dataKey={dataKey}
+      columnIndex={columnIndex}
+      viewComponent={<AutocompleteView />}
+      editComponent={<AutocompleteEdit />}
+      addComponent={<AutocompleteAdd />}
+    />
+  );
+});
 
 AutocompleteCell.propTypes = {
   data: PropTypes.object.isRequired,

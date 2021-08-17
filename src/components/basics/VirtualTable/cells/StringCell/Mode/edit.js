@@ -22,7 +22,7 @@ const EditStringCell = React.memo(function EditStringCell({ data, dataKey, colum
   } = columns[columnIndex];
 
   const keyId = data[selectableRowKey];
-  const [value, setValue] = useState(data[dataKey]);
+  const [value, setValue] = useState(data[dataKey] || '');
 
   const input$ = new Subject();
   const input = input$
@@ -80,12 +80,12 @@ const EditStringCell = React.memo(function EditStringCell({ data, dataKey, colum
 EditStringCell.propTypes = {
   columnIndex: PropTypes.number,
   data: PropTypes.object,
-  dataKey: PropTypes.object
+  dataKey: PropTypes.string
 };
 
 EditStringCell.defaultProps = {
   columnIndex: 0,
-  data: '',
+  data: {},
   dataKey: ''
 };
 

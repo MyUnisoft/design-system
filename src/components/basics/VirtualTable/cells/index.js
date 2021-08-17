@@ -19,9 +19,9 @@ import WalletCell from "./WalletCell";
 import AutocompleteCell from './AutocompleteCell';
 import SwitchBadgeStatusCell from './SwitchBadgeStatusCell';
 
-const CellRender = React.memo(({
+const CellRender = React.memo(function CellRender({
   type, subtype, data, dataKey, columnIndex, renderComponent, spaceBetween
-}) => {
+}) {
 
   function switchCell() {
     switch (type) {

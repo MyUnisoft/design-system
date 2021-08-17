@@ -78,7 +78,7 @@ const EditCheckBoxCell = ({ data, dataKey, columnIndex }) => {
 EditCheckBoxCell.propTypes = {
   data: PropTypes.object.isRequired,
   columnIndex: PropTypes.number.isRequired,
-  dataKey: PropTypes.object.isRequired
+  dataKey: PropTypes.string.isRequired
 };
 
 export default EditCheckBoxCell;

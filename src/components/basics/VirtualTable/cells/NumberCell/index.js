@@ -6,7 +6,7 @@ import ViewNumberCell from './Mode/view';
 import AddNumberCell from './Mode/add';
 import EditNumberCell from './Mode/edit';
 
-const NumberCell = memo(({ data, dataKey, columnIndex }) => {
+const NumberCell = memo(function NumberCell({ data, dataKey, columnIndex }) {
 
   return <AutoSelectorMode
     data={data}

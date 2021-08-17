@@ -15,7 +15,7 @@ function BadgeStatusCell({ data, dataKey, columnIndex }) {
   
   const listActionAllow = useMemo(() => {
     const {
-      actionsByStatus
+      actionsByStatus = []
     } = columns[columnIndex];
 
     if(!valueData) {
@@ -24,6 +24,10 @@ function BadgeStatusCell({ data, dataKey, columnIndex }) {
 
     return actionsByStatus?.filter(element => element.status.includes(valueData.status));
   }, [columns, columnIndex, valueData]);
+
+  if (!valueData?.status) {
+    return null;
+  }
 
   return (
     <div className={classes.container}>

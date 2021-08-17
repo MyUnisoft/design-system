@@ -10,7 +10,10 @@ const ViewStringCell = ({ data }) => (
 );
 
 ViewStringCell.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ])
 };
 
 ViewStringCell.defaultProps = {

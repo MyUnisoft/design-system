@@ -10,11 +10,11 @@ const ViewNumberCell = ({ data }) => (
 );
 
 ViewNumberCell.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.number
 };
 
 ViewNumberCell.defaultProps = {
-  data: {}
+  data: null
 };
 
 export default ViewNumberCell;

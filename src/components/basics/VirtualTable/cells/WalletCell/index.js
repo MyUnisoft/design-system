@@ -3,10 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _get from 'lodash/get';
 import _head from 'lodash/head';
+import I18n from 'i18next';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import useStyles from './styles';
-import I18n from '../../../../../assets/I18n';
 
 function WalletCell({ data, dataKey }) {
   const classes = useStyles();

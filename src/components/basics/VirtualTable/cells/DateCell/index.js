@@ -5,7 +5,7 @@ import ViewDateCell from "./Mode/view";
 import AutoSelectorMode from "../AutoSelectorMode";
 import AddDateCell from "./Mode/add";
 
-const DateCell = memo(({ data, dataKey, columnIndex }) => {
+const DateCell = memo(function DateCell({ data, dataKey, columnIndex }) {
   return (
     <AutoSelectorMode
       data={data}

@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from '../styles';
 
-const ViewCheckBoxCell = memo(({ data }) => {
+const ViewCheckBoxCell = memo(function ViewCheckBoxCell({ data }) {
   const classes = useStyles();
   return (
   // TODO refacto with component
@@ -21,7 +21,7 @@ const ViewCheckBoxCell = memo(({ data }) => {
 });
 
 ViewCheckBoxCell.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.bool.isRequired
 };
 
 export default ViewCheckBoxCell;

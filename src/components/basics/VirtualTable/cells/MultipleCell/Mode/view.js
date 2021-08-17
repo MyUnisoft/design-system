@@ -41,7 +41,7 @@ const ViewMultipleCell = ({ data, arrayData }) => {
 };
 
 ViewMultipleCell.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.string
 };
 
 ViewMultipleCell.defaultProps = {

@@ -7,7 +7,7 @@ import { debounceTime } from 'rxjs/operators';
 import styles from '../numberCell.module.scss';
 import VirtualTableContext from '../../../context';
 
-const AddNumberCell = memo(({ data, dataKey }) => {
+const AddNumberCell = memo(function AddNumberCell({ data, dataKey }) {
   const { send } = useContext(VirtualTableContext);
   const { id = -1 } = data;
   const [value, setValue] = useState(data[dataKey]);

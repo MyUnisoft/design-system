@@ -23,8 +23,12 @@ function ViewDateCell({ data, columnIndex }) {
 }
 
 ViewDateCell.propTypes = {
-  data: PropTypes.object.isRequired,
-  columnIndex: PropTypes.number.isRequired
+  data: PropTypes.string,
+  columnIndex: PropTypes.number
+};
+
+ViewDateCell.defaultProps = {
+  data: ''
 };
 
 export default ViewDateCell;

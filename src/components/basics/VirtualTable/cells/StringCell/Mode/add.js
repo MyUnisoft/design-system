@@ -7,7 +7,7 @@ import { debounceTime } from 'rxjs/operators';
 import styles from '../stringCell.module.scss';
 import VirtualTableContext from '../../../context';
 
-const AddStringCell = React.memo(({ data, dataKey }) => {
+const AddStringCell = React.memo(function AddStringCell({ data, dataKey }) {
   const { send } = useContext(VirtualTableContext);
   const { id = -1 } = data;
   const [value, setValue] = useState(data[dataKey]);
@@ -55,11 +55,11 @@ const AddStringCell = React.memo(({ data, dataKey }) => {
 
 AddStringCell.propTypes = {
   data: PropTypes.object,
-  dataKey: PropTypes.object
+  dataKey: PropTypes.string
 };
 
 AddStringCell.defaultProps = {
-  data: '',
+  data: {},
   dataKey: ''
 };
 

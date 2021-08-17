@@ -6,7 +6,7 @@ import { debounceTime } from "rxjs/operators";
 import styles from "../amount.module.scss";
 import { formatNumberAndRoundMaxTwoDigits } from "../../../../../../helpers/number";
 
-const AmountAddCell = memo(({ data, dataKey, columnIndex }) => {
+const AmountAddCell = memo(function AmountAddCell({ data, dataKey, columnIndex }) {
   const { send, config: { columns } } = useContext(VirtualTableContext);
   const { id = -1 } = data;
   const [value, setValue] = useState(data[dataKey]);
@@ -52,12 +52,12 @@ const AmountAddCell = memo(({ data, dataKey, columnIndex }) => {
 
 AmountAddCell.propTypes = {
   data: PropTypes.object,
-  dataKey: PropTypes.object,
+  dataKey: PropTypes.string,
   columnIndex: PropTypes.number
 };
 
 AmountAddCell.defaultProps = {
-  data: '',
+  data: {},
   dataKey: '',
   columnIndex: -1
 };

@@ -7,7 +7,7 @@ import VirtualTableContext from '../../../context';
 import I18n from '../../../../../../assets/I18n';
 import { NO_SELECT } from '../../../../../../constants/data';
 
-const AddSelectCell = memo(({ data, dataKey, columnIndex }) => {
+const AddSelectCell = memo(function AddSelectCell({ data, dataKey, columnIndex }) {
   const {
     config, send
   } = useContext(VirtualTableContext);
@@ -60,9 +60,9 @@ const AddSelectCell = memo(({ data, dataKey, columnIndex }) => {
 });
 
 AddSelectCell.propTypes = {
-  data: PropTypes.object.isRequired,
-  dataKey: PropTypes.string.isRequired,
-  columnIndex: PropTypes.number.isRequired
+  data: PropTypes.object,
+  dataKey: PropTypes.string,
+  columnIndex: PropTypes.number
 };
 
 export default AddSelectCell;

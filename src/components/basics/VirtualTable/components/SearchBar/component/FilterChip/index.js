@@ -67,7 +67,10 @@ FilterChip.propTypes = {
   inputProps: PropTypes.object,
   name: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  value: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired
 };
 
 export default FilterChip;
