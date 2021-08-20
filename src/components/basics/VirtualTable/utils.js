@@ -8,11 +8,12 @@ const SORTABLE_DIRECTIONS = {
   DESC: 'desc'
 };
 
-const SORTABLE_TYPES = [
-  TYPE_CELL.AMOUNT,
-  TYPE_CELL.NUMBER,
-  TYPE_CELL.STRING
-];
+const INSERT_POSITION = {
+  BOTTOM: 'bottom',
+  TOP: 'top'
+};
+
+const SORTABLE_TYPES = [TYPE_CELL.AMOUNT, TYPE_CELL.NUMBER, TYPE_CELL.STRING];
 
 const ROW_TYPE = {
   ADD_BUTTON: 'add_button',
@@ -30,39 +31,44 @@ const TABLE_STATE = {
 
 const addGroupIdToObj = (groupId, obj) => ({ ...obj, groupId });
 
-const processGroupItemData = group => group.data
-  .map(groupItem => addGroupIdToObj(group.id, groupItem));
+const processGroupItemData = (group) =>
+  group.data.map((groupItem) => addGroupIdToObj(group.id, groupItem));
 
-const createTitleRow = group => ({
-  name: group.name, rowType: ROW_TYPE.GROUP_BUTTON, groupId: group.id
+const createTitleRow = (group) => ({
+  name: group.name,
+  rowType: ROW_TYPE.GROUP_BUTTON,
+  groupId: group.id
 });
 
 const createAddRow = (onAdd) => ({
-  name: I18n.t('common.addRow'), rowType: ROW_TYPE.ADD_BUTTON, onAdd
+  name: I18n.t('common.addRow'),
+  rowType: ROW_TYPE.ADD_BUTTON,
+  onAdd
 });
 
-const createAddRowGroup = group => ({
-  ...createAddRow(), groupId: group.id
+const createAddRowGroup = (group) => ({
+  ...createAddRow(),
+  groupId: group.id
 });
 
 /**
  * Checks if the given column type is handled by the sorting function.
  * This can be override by the `sortable` flag but with unpredictable result.
- * 
+ *
  * @param {object} column
  * @param {string} column.typeCell - The column type param
  * @param {boolean} column.sortable - The column sortable flag
  */
-const isSortable = ({
-  typeCell, sortable
-}) => sortable !== false && (sortable || SORTABLE_TYPES.includes(typeCell) || !typeCell);
+const isSortable = ({ typeCell, sortable }) =>
+  sortable !== false &&
+  (sortable || SORTABLE_TYPES.includes(typeCell) || !typeCell);
 
 /**
  * Checks if the given `row` matches both the specific `filters`
  * and the global search `term`
- * 
+ *
  * @param {array} columns - The columns used for the global search
- * @param {object} row - The data to check 
+ * @param {object} row - The data to check
  * @param {array} filters - List of specific column filters
  * @param {string} term - The global search term
  */
@@ -80,6 +86,7 @@ const matchFilter = (columns, row, filters = [], term = '') => {
 
 export {
   ROW_TYPE,
+  INSERT_POSITION,
   TABLE_STATE,
   SORTABLE_DIRECTIONS,
   addGroupIdToObj,

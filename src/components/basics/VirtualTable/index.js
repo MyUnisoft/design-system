@@ -3,54 +3,56 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-  useState,
-} from "react";
-import PropTypes from "prop-types";
-import cx from "classnames";
-import _isEmpty from "lodash/isEmpty";
-import _isEqual from "lodash/isEqual";
-import _orderBy from "lodash/orderBy";
-import Tooltip from "@material-ui/core/Tooltip";
+  useState
+} from 'react';
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Tooltip from '@material-ui/core/Tooltip';
+import cx from 'classnames';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _orderBy from 'lodash/orderBy';
+import PropTypes from 'prop-types';
 import {
   MultiGrid,
   Grid,
   ScrollSync,
   AutoSizer,
   CellMeasurerCache,
-  CellMeasurer,
-} from "react-virtualized";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+  CellMeasurer
+} from 'react-virtualized';
 
-import CellRender from "./cells";
-import Checkbox from "./components/Checkbox";
-import FontIcon from "../Icon/Font";
-import machine from "./machine";
-import I18n from "../../../assets/I18n";
-import styles from "./styles/virtualTable.module.scss";
-import VirtualTableContext from "./context";
+import I18n from '../../../assets/I18n';
 
-import ErrorTooltip from "../ErrorTooltip";
-import { InlineButton } from "../Buttons";
-import { useMachine } from "../../../hooks/useMachine";
-import { TYPE_CELL, TYPE_FOOTER_CELL } from "../../../constants/typeCell";
+import { ALIGN_CELL } from '../../../constants/alignCell';
+import { TYPE_CELL, TYPE_FOOTER_CELL } from '../../../constants/typeCell';
+import { OPERAND } from '../../../constants/typeOperand';
+import { formatNumber, generateId } from '../../../helpers/number';
+import { useMachine } from '../../../hooks/useMachine';
+import { InlineButton } from '../Buttons';
+import ErrorTooltip from '../ErrorTooltip';
+import FontIcon from '../Icon/Font';
+import CellRender from './cells';
+import AddLine from './components/AddLine';
+import Checkbox from './components/Checkbox';
+import ContextMenu from './components/ContextMenu';
+import HeaderSortable from './components/Header/components/Sortable';
+import SearchBar from './components/SearchBar';
+import { allowedTypes } from './components/SearchBar/utils';
+import VirtualTableContext from './context';
+import { useSortable } from './hooks';
+import machine from './machine';
+import styles from './styles/virtualTable.module.scss';
 import {
-  createAddRow,
   createTitleRow,
+  INSERT_POSITION,
   isSortable,
   matchFilter,
   processGroupItemData,
   ROW_TYPE,
-  TABLE_STATE,
-} from "./utils";
-import { ALIGN_CELL } from "../../../constants/alignCell";
-import ContextMenu from "./components/ContextMenu";
-import { OPERAND } from "../../../constants/typeOperand";
-import { formatNumber, generateId } from "../../../helpers/number";
-import SearchBar from "./components/SearchBar";
-import { allowedTypes } from "./components/SearchBar/utils";
-import HeaderSortable from "./components/Header/components/Sortable";
-import { useSortable } from "./hooks";
+  TABLE_STATE
+} from './utils';
 
 const VirtualTable = React.memo(
   ({
@@ -65,16 +67,17 @@ const VirtualTable = React.memo(
     customHeader = false,
     isEdit,
     tableKeyName: _tableKeyName,
-    defaultSelectedRows,
+    defaultSelectedRows
   }) => {
     const {
-      columns,
+      insertPosition = INSERT_POSITION.TOP,
+      columns: columnsRaw,
       hasSecureSociety = false,
       openSocieties = [],
       hasFooter = false,
       hasHeader = true,
       selectableRow = false,
-      selectableRowKey = "id",
+      selectableRowKey = 'id',
       selectableOnlyOneRow = false,
       customSelectionHeader,
       minCellWidth = 100,
@@ -96,13 +99,13 @@ const VirtualTable = React.memo(
       hasSearchbar = false,
       spaceBetween = 2,
       actionsButton = [],
-      hasCheckBoxHidden = false,
+      hasCheckBoxHidden = false
     } = config;
 
     const cache = new CellMeasurerCache({
       fixedWidth: true,
       defaultHeight: rowHeight,
-      fixedHeight: true,
+      fixedHeight: true
     });
     const refBodyGrid = useRef(null);
     const refFooterGrid = useRef(null);
@@ -112,6 +115,8 @@ const VirtualTable = React.memo(
     const [searchFilters, setSearchFilters] = useState({});
     const { order, orderDirection, onOrderChange } = useSortable();
 
+    const CHECKBOX_COLUMN = 'checkboxColumn';
+
     const tableKeyName = useMemo(
       () => _tableKeyName || generateId(),
       [_tableKeyName]
@@ -120,6 +125,22 @@ const VirtualTable = React.memo(
       () => (order ? _orderBy(rowData, order, orderDirection) : rowData),
       [rowData, order, orderDirection]
     );
+
+    const hasCheckBox =
+      selectableRow || selectableOnlyOneRow || modeAdd || modeEdit || modeGroup;
+
+    const columns = useMemo(() => {
+      if (hasCheckBox) {
+        return [
+          {
+            key: CHECKBOX_COLUMN,
+            width: 50
+          },
+          ...columnsRaw
+        ];
+      }
+      return columnsRaw;
+    }, [columnsRaw, hasCheckBox]);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -136,7 +157,7 @@ const VirtualTable = React.memo(
 
     useEffect(() => {
       if (defaultSelectedRows)
-        send("selectRows", { selectedRows: defaultSelectedRows });
+        send('selectRows', { selectedRows: defaultSelectedRows });
     }, [defaultSelectedRows?.size]);
 
     useEffect(() => {
@@ -147,13 +168,13 @@ const VirtualTable = React.memo(
 
     useEffect(() => {
       if (addRows.length === 0) {
-        send("cancel");
+        send('cancel');
       }
     }, [addRows]);
 
     const allRows = useMemo(() => {
-      if (modeAdd) {
-        return [createAddRow(onCustomAdd), ...addRows, ...dataRows];
+      if (insertPosition === INSERT_POSITION.BOTTOM) {
+        return [...dataRows, ...addRows];
       }
       return [...addRows, ...dataRows];
     }, [addRows, dataRows]);
@@ -216,10 +237,10 @@ const VirtualTable = React.memo(
     useEffect(() => {
       const processedDataRows = processRowsData();
       // eslint-disable-next-line no-use-before-define
-      send("updateCtx", { data: processedDataRows });
+      send('updateCtx', { data: processedDataRows });
       if (alwaysInEdition && processedDataRows?.length > 0) {
         const keys = processedDataRows.map((row) => row[selectableRowKey]);
-        send("alwaysEditMode", { keys });
+        send('alwaysEditMode', { keys });
       }
     }, [data]);
 
@@ -263,7 +284,7 @@ const VirtualTable = React.memo(
       () => ({
         height: calculateHeightFullTable(displayableRows.length * rowHeight),
         maxHeight: maxHeight,
-        width: widthTable,
+        width: widthTable
       }),
       [maxHeight, widthTable, displayableRows]
     );
@@ -277,12 +298,22 @@ const VirtualTable = React.memo(
       return true;
     };
 
+    const _renderHeaderCellDispatch = (params) => {
+      const { columnIndex } = params;
+      const { key: keyColumn } = columns[columnIndex];
+
+      if (keyColumn === CHECKBOX_COLUMN) {
+        return _renderHeaderCheckBoxCell(params);
+      }
+      return _renderHeaderCell(params);
+    };
+
     const _renderHeaderCell = useCallback(
       ({
         // eslint-disable-next-line react/prop-types
         columnIndex,
         key,
-        style,
+        style
       }) => {
         const {
           header,
@@ -291,11 +322,11 @@ const VirtualTable = React.memo(
           typeCell,
           headerOnClick = () => {},
           selectAll = false,
-          variant = "primary",
+          variant = 'primary',
           changeOtherColumnOnClick,
           alignCenter = false,
           alignText,
-          sortable,
+          sortable
         } = columns[columnIndex];
         const render = () => (
           <div
@@ -307,7 +338,7 @@ const VirtualTable = React.memo(
               [styles.center]:
                 [TYPE_CELL.CHECKBOX].includes(typeCell) || alignCenter,
               [styles.hasSelectAll]: selectAll,
-              [styles.cell_withGrid]: withBorders,
+              [styles.cell_withGrid]: withBorders
             })}
             key={key}
             style={style}
@@ -320,10 +351,10 @@ const VirtualTable = React.memo(
                   id={`${header}_${columnIndex}`}
                   checked={isAllCheckedColumn(keyColumn, displayableRows)}
                   onChange={(e) => {
-                    send("selectAllColumn", {
+                    send('selectAllColumn', {
                       value: e.target.checked,
                       keyColumn,
-                      changeOtherColumnOnClick,
+                      changeOtherColumnOnClick
                     });
                   }}
                   variant={variant}
@@ -370,7 +401,7 @@ const VirtualTable = React.memo(
       keyColumn,
       columnIndex,
       optionList,
-      renderComponent,
+      renderComponent
     }) => {
       const currentTypeCell = (rowData) => {
         if (typeof typeCell === OPERAND.FUNCTION) {
@@ -384,38 +415,25 @@ const VirtualTable = React.memo(
           ? optionList(displayableRow)
           : optionList;
 
-      const onAdd = displayableRow?.onAdd;
-
-      switch (displayableRow?.rowType) {
-        case ROW_TYPE.ADD_BUTTON:
-          return (
-            <div
-              className={styles.addRow}
-              onClick={() => (onAdd ? onAdd() : send("add", { addOneByOne }))}
-            >
-              {columnIndex === 0 ? displayableRow.name : null}
-            </div>
-          );
-        case ROW_TYPE.GROUP_BUTTON:
-          return (
-            <div className={styles.groupRow}>
-              {columnIndex === 0 ? displayableRow.name : null}
-            </div>
-          );
-        default:
-          return (
-            <CellRender
-              data={displayableRow}
-              dataKey={keyColumn}
-              columnIndex={columnIndex}
-              withBorders={withBorders}
-              type={currentTypeCell(displayableRow)}
-              optionList={_optionList}
-              renderComponent={renderComponent}
-              spaceBetween={spaceBetween}
-            />
-          );
+      if (displayableRow?.rowType === ROW_TYPE.GROUP_BUTTON) {
+        return (
+          <div className={styles.groupRow}>
+            {columnIndex === 0 ? displayableRow.name : null}
+          </div>
+        );
       }
+      return (
+        <CellRender
+          data={displayableRow}
+          dataKey={keyColumn}
+          columnIndex={columnIndex}
+          withBorders={withBorders}
+          type={currentTypeCell(displayableRow)}
+          optionList={_optionList}
+          renderComponent={renderComponent}
+          spaceBetween={spaceBetween}
+        />
+      );
     };
 
     const _renderBodyCell = useCallback(
@@ -425,7 +443,7 @@ const VirtualTable = React.memo(
         key,
         parent,
         rowIndex,
-        style,
+        style
       }) => {
         const { [selectableRowKey]: selector, rowType } =
           displayableRows[rowIndex];
@@ -446,8 +464,11 @@ const VirtualTable = React.memo(
           tooltipError: hasErrorTooltip = () => false,
           tooltipDetail: hasTooltipDetail = () => false,
           optionList = () => [],
-          renderComponent,
+          renderComponent
         } = columns[columnIndex];
+        if (keyColumn === CHECKBOX_COLUMN) {
+          return _renderCheckBoxCell({ key, parent, rowIndex, style });
+        }
 
         const hasError = !checkValue(displayableRows[rowIndex][keyColumn]);
         const isGroupButton = rowType === ROW_TYPE.GROUP_BUTTON;
@@ -495,7 +516,7 @@ const VirtualTable = React.memo(
                 [styles.cell_align]: [
                   ALIGN_CELL.CENTER,
                   ALIGN_CELL.BOTTOM,
-                  ALIGN_CELL.TOP,
+                  ALIGN_CELL.TOP
                 ].includes(alignVertical),
                 [styles.cell_alignVerticalCenter]:
                   alignVertical === ALIGN_CELL.CENTER,
@@ -507,7 +528,7 @@ const VirtualTable = React.memo(
                 [styles.pointer]: !!simpleClick,
                 [styles.cell_thumbnail]: [TYPE_CELL.THUMBNAIL].includes(
                   typeCell
-                ),
+                )
               }
             )}
             key={key}
@@ -528,7 +549,7 @@ const VirtualTable = React.memo(
                     keyColumn,
                     columnIndex,
                     optionList,
-                    renderComponent,
+                    renderComponent
                   })
                 )}
               </ContextMenu>
@@ -540,7 +561,7 @@ const VirtualTable = React.memo(
                   keyColumn,
                   columnIndex,
                   optionList,
-                  renderComponent,
+                  renderComponent
                 })
               )
             )}
@@ -591,7 +612,7 @@ const VirtualTable = React.memo(
         // eslint-disable-next-line react/prop-types
         key,
         rowIndex,
-        style,
+        style
       }) => {
         if (hasCheckBoxHidden) {
           return <div />;
@@ -614,10 +635,10 @@ const VirtualTable = React.memo(
                     id={`${rowIndex}_selectable_header_${tableKeyName}`}
                     name={`${rowIndex}_selectable_header__${tableKeyName}`}
                     checked={isAllChecked}
-                    disabled={!can("toggleAllRow")}
+                    disabled={!can('toggleAllRow')}
                     onChange={(e) => {
-                      send("toggleAllRow", {
-                        selectedRows: e.target.checked ? allSelectableKey : [],
+                      send('toggleAllRow', {
+                        selectedRows: e.target.checked ? allSelectableKey : []
                       });
                     }}
                   />
@@ -636,7 +657,7 @@ const VirtualTable = React.memo(
         // eslint-disable-next-line react/prop-types
         columnIndex,
         key,
-        style,
+        style
       }) => {
         const {
           typeFooter,
@@ -644,7 +665,7 @@ const VirtualTable = React.memo(
           typeCell,
           footerValue,
           key: keyValue,
-          alignText,
+          alignText
         } = columns[columnIndex];
 
         const _getValue = () => {
@@ -706,7 +727,7 @@ const VirtualTable = React.memo(
         key,
         parent,
         rowIndex,
-        style,
+        style
       }) => {
         const { groupId, rowType = ROW_TYPE.VIEW } = displayableRows[rowIndex];
         const isSelected = selectedRows.has(
@@ -739,12 +760,12 @@ const VirtualTable = React.memo(
                   name={`${rowIndex}_selectable_${tableKeyName}`}
                   checked={isSelected}
                   disabled={
-                    !can("selectItem") || !can("unselectItem") || isSecuredRow
+                    !can('selectItem') || !can('unselectItem') || isSecuredRow
                   }
                   onChange={(e) => {
-                    send(e.target.checked ? "selectItem" : "unselectItem", {
+                    send(e.target.checked ? 'selectItem' : 'unselectItem', {
                       itemKey: displayableRows[rowIndex][selectableRowKey],
-                      onlyOneRow: selectableOnlyOneRow,
+                      onlyOneRow: selectableOnlyOneRow
                     });
                   }}
                 />
@@ -773,7 +794,7 @@ const VirtualTable = React.memo(
                 {
                   [styles.selectedRow]: isSelected,
                   [styles.lockRow]: isSecuredRow,
-                  [styles.groupRow]: isGroupButton,
+                  [styles.groupRow]: isGroupButton
                 }
               )}
               key={key}
@@ -782,11 +803,11 @@ const VirtualTable = React.memo(
               {/* eslint-disable-next-line no-nested-ternary */}
               {isGroupButton ? (
                 <FontIcon
-                  name={isGroupCollapsed ? "icon-plus1" : "icon-minus"}
+                  name={isGroupCollapsed ? 'icon-plus1' : 'icon-minus'}
                   size="16px"
                   onClick={() =>
-                    send(isGroupCollapsed ? "expandGroup" : "collapseGroup", {
-                      groupId,
+                    send(isGroupCollapsed ? 'expandGroup' : 'collapseGroup', {
+                      groupId
                     })
                   }
                 />
@@ -798,7 +819,7 @@ const VirtualTable = React.memo(
                   color="red"
                   size="18px"
                   onClick={() =>
-                    send("delete", { id: displayableRows[rowIndex]?.id })
+                    send('delete', { id: displayableRows[rowIndex]?.id })
                   }
                 />
               )}
@@ -813,53 +834,53 @@ const VirtualTable = React.memo(
       ...customButtons?.map((customButton) => {
         const { isDisabled = () => false, onClick = () => {} } = customButton;
         return {
-          _type: "icon",
+          _type: 'icon',
           iconSize: 28,
           disabled: isDisabled({ dataRows, state }),
           ...customButton,
-          onClick: () => onClick(allRows),
+          onClick: () => onClick(allRows)
         };
-      }),
+      })
     ];
 
     if (actionsButton.length > 0) {
       buttons.push({
-        _type: "icon",
-        iconName: "icon-options",
-        iconColor: "white",
-        color: "primary",
+        _type: 'icon',
+        iconName: 'icon-options',
+        iconColor: 'white',
+        color: 'primary',
         iconSize: 28,
-        onClick: handleClick,
+        onClick: handleClick
       });
     }
 
-    if (["IDLE"].includes(state)) {
+    if (['IDLE'].includes(state)) {
       if (modeEdit) {
         buttons.push({
-          _type: "icon",
-          iconName: "icon-pencil",
-          iconColor: "white",
-          color: "primary",
+          _type: 'icon',
+          iconName: 'icon-pencil',
+          iconColor: 'white',
+          color: 'primary',
           iconSize: 28,
-          titleInfoBulle: I18n.t("tooltips.edit"),
-          disabled: !can("edit"),
+          titleInfoBulle: I18n.t('tooltips.edit'),
+          disabled: !can('edit'),
           onClick: () => {
-            send("edit");
-          },
+            send('edit');
+          }
         });
       }
       if (modeDelete) {
         buttons.push({
-          _type: "icon",
-          iconName: "icon-trash",
-          iconColor: "white",
-          color: "error",
+          _type: 'icon',
+          iconName: 'icon-trash',
+          iconColor: 'white',
+          color: 'error',
           iconSize: 28,
-          titleInfoBulle: I18n.t("tooltips.delete"),
-          disabled: !can("deleteRow"),
+          titleInfoBulle: I18n.t('tooltips.delete'),
+          disabled: !can('deleteRow'),
           onClick: () => {
             handleRowsToDelete(selectedRows);
-          },
+          }
         });
       }
     }
@@ -870,14 +891,14 @@ const VirtualTable = React.memo(
     ) {
       buttons.push(
         {
-          _type: "icon",
-          iconName: "icon-save",
-          iconColor: "white",
-          color: "primary",
+          _type: 'icon',
+          iconName: 'icon-save',
+          iconColor: 'white',
+          color: 'primary',
           iconSize: 28,
-          titleInfoBulle: I18n.t("tooltips.save"),
+          titleInfoBulle: I18n.t('tooltips.save'),
           disabled:
-            !can("validate") ||
+            !can('validate') ||
             allRows.filter((e) =>
               [ROW_TYPE.NEW, ROW_TYPE.EDIT].includes(e.rowType)
             ).length === 0,
@@ -885,7 +906,10 @@ const VirtualTable = React.memo(
             switch (state) {
               case TABLE_STATE.ADD:
                 handleValidateAdd(
-                  allRows.filter((e) => e.rowType === ROW_TYPE.NEW)
+                  allRows.filter((e) => e.rowType === ROW_TYPE.NEW),
+                  insertPosition === INSERT_POSITION.BOTTOM
+                    ? displayableRows.length
+                    : 0
                 );
                 break;
               case TABLE_STATE.EDIT:
@@ -895,20 +919,20 @@ const VirtualTable = React.memo(
                 );
                 break;
             }
-            send("validate");
-          },
+            send('validate');
+          }
         },
         {
-          _type: "icon",
-          iconName: "icon-close1",
-          iconColor: "white",
-          color: "error",
+          _type: 'icon',
+          iconName: 'icon-close1',
+          iconColor: 'white',
+          color: 'error',
           iconSize: 28,
-          titleInfoBulle: I18n.t("tooltips.cancel"),
-          disabled: !can("cancel"),
+          titleInfoBulle: I18n.t('tooltips.cancel'),
+          disabled: !can('cancel'),
           onClick: () => {
-            send("cancel");
-          },
+            send('cancel');
+          }
         }
       );
     }
@@ -945,6 +969,14 @@ const VirtualTable = React.memo(
       return heightCalculate;
     };
 
+    const handleAddClick = () => {
+      if (onCustomAdd) {
+        onCustomAdd();
+      } else {
+        send('add', { addOneByOne, position: insertPosition });
+      }
+    };
+
     return (
       <div>
         {customSelectionHeader ||
@@ -958,7 +990,7 @@ const VirtualTable = React.memo(
               )}
               <div>
                 {(selectableRow || selectableOnlyOneRow) &&
-                  I18n.t("common.selectedCount", { count: selectedRows.size })}
+                  I18n.t('common.selectedCount', { count: selectedRows.size })}
               </div>
               <div>
                 <InlineButton buttons={buttons} />
@@ -990,11 +1022,14 @@ const VirtualTable = React.memo(
             context,
             send,
             can,
-            config,
+            config: {
+              ...config,
+              columns
+            }
           }}
         >
           <ScrollSync>
-            {({ onScroll, scrollTop, scrollLeft }) => (
+            {({ onScroll, scrollLeft }) => (
               <AutoSizer onResize={handleResize} style={size}>
                 {({ height, width }) => {
                   if (
@@ -1030,68 +1065,10 @@ const VirtualTable = React.memo(
 
                   return (
                     <div className={styles.GridRow}>
-                      {(selectableRow ||
-                        selectableOnlyOneRow ||
-                        modeAdd ||
-                        modeGroup) && (
-                        <div className={styles.LeftSideGridContainer}>
-                          {hasHeader && (
-                            <Grid
-                              cellRenderer={_renderHeaderCheckBoxCell}
-                              className={cx(
-                                styles.HeaderGrid,
-                                styles.defaultStyle
-                              )}
-                              width={30}
-                              height={32}
-                              rowHeight={32}
-                              columnWidth={30}
-                              rowCount={1}
-                              columnCount={1}
-                            />
-                          )}
-                          {customHeader && (
-                            <Grid
-                              cellRenderer={_renderHeaderCheckBoxCell}
-                              className={cx(
-                                styles.HeaderGrid,
-                                styles.defaultStyle
-                              )}
-                              width={30}
-                              height={
-                                customHeaderRef.current?.offsetHeight || 32
-                              }
-                              rowHeight={
-                                customHeaderRef.current?.offsetHeight || 32
-                              }
-                              columnWidth={30}
-                              rowCount={1}
-                              columnCount={1}
-                            />
-                          )}
-                          <Grid
-                            overscanColumnCount={0}
-                            overscanRowCount={15}
-                            cellRenderer={_renderCheckBoxCell}
-                            columnWidth={30}
-                            columnCount={1}
-                            className={cx(
-                              styles.LeftSideGrid,
-                              styles.defaultStyle
-                            )}
-                            height={height}
-                            rowHeight={cache.rowHeight}
-                            deferredMeasurementCache={cache}
-                            rowCount={displayableRows.length}
-                            scrollTop={scrollTop}
-                            width={30}
-                          />
-                        </div>
-                      )}
                       <div className={styles.GridColumn}>
                         {customHeader &&
                           React.cloneElement(customHeader, {
-                            ref: customHeaderRef,
+                            ref: customHeaderRef
                           })}
                         {hasHeader && (
                           <div className={styles.gridContainer}>
@@ -1101,7 +1078,7 @@ const VirtualTable = React.memo(
                                 styles.HeaderGrid,
                                 styles.defaultStyle,
                                 {
-                                  [styles.HeaderGrid_withBorders]: withBorders,
+                                  [styles.HeaderGrid_withBorders]: withBorders
                                 }
                               )}
                               columnWidth={_getColumnWidth}
@@ -1109,11 +1086,11 @@ const VirtualTable = React.memo(
                               height={wrapHeaderText ? headerHeight : 32}
                               overscanColumnCount={12}
                               enableFixedColumnScroll
-                              cellRenderer={_renderHeaderCell}
+                              cellRenderer={_renderHeaderCellDispatch}
                               rowHeight={wrapHeaderText ? headerHeight : 32}
                               rowCount={1}
                               scrollLeft={scrollLeft}
-                              fixedColumnCount={fixedColumns}
+                              fixedColumnCount={fixedColumns + +hasCheckBox}
                               hideBottomLeftGridScrollbar
                               width={
                                 width -
@@ -1122,6 +1099,9 @@ const VirtualTable = React.memo(
                             />
                           </div>
                         )}
+                        {modeAdd && insertPosition === INSERT_POSITION.TOP && (
+                          <AddLine onAdd={handleAddClick} />
+                        )}
                         <div className={styles.gridContainer}>
                           <MultiGrid
                             ref={refBodyGrid}
@@ -1129,7 +1109,7 @@ const VirtualTable = React.memo(
                               styles.BodyGrid,
                               styles.defaultStyle,
                               {
-                                [styles.BodyGrid_withBorders]: withBorders,
+                                [styles.BodyGrid_withBorders]: withBorders
                               }
                             )}
                             columnWidth={_getColumnWidth}
@@ -1142,7 +1122,7 @@ const VirtualTable = React.memo(
                             cellRenderer={_renderBodyCell}
                             rowHeight={cache.rowHeight}
                             hideBottomLeftGridScrollbar
-                            fixedColumnCount={fixedColumns}
+                            fixedColumnCount={fixedColumns + +hasCheckBox}
                             rowCount={displayableRows.length}
                             width={
                               width -
@@ -1150,6 +1130,10 @@ const VirtualTable = React.memo(
                             }
                           />
                         </div>
+                        {modeAdd &&
+                          insertPosition === INSERT_POSITION.BOTTOM && (
+                            <AddLine onAdd={handleAddClick} />
+                          )}
                       </div>
                       {hasFooter && (
                         <div className={styles.footer_wrap}>
@@ -1192,25 +1176,30 @@ const VirtualTable = React.memo(
 VirtualTable.propTypes = {
   data: PropTypes.array.isRequired,
   config: PropTypes.object.isRequired,
-  heightTable: PropTypes.string || PropTypes.number,
-  widthTable: PropTypes.string || PropTypes.number,
+  heightTable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  widthTable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   selectRows: PropTypes.func,
   isEdit: PropTypes.func,
   handleRowsToDelete: PropTypes.func,
   handleValidateEdit: PropTypes.func,
   handleValidateAdd: PropTypes.func,
   defaultSelectedRows: PropTypes.instanceOf(Set),
+  maxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  tableKeyName: PropTypes.string,
+  customHeader: PropTypes.node
 };
 
 VirtualTable.defaultProps = {
-  heightTable: "400px",
-  widthTable: "100%",
+  heightTable: '400px',
+  maxHeight: '600px',
+  widthTable: '100%',
   selectRows: () => {},
   isEdit: () => {},
   handleRowsToDelete: () => {},
   handleValidateEdit: () => {},
   handleValidateAdd: () => {},
   defaultSelectedRows: new Set(),
+  customHeader: false
 };
 
 export default VirtualTable;

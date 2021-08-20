@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SORTABLE_DIRECTIONS } from './utils';
+import { ROW_TYPE, SORTABLE_DIRECTIONS } from './utils';
 
 const useSortable = () => {
   const [order, setOrder] = useState('');
@@ -7,7 +7,11 @@ const useSortable = () => {
 
   const onOrderChange = (key) => {
     if (key === order) {
-      setOrderDirection(state => state === SORTABLE_DIRECTIONS.ASC ? SORTABLE_DIRECTIONS.DESC : SORTABLE_DIRECTIONS.ASC);
+      setOrderDirection((state) =>
+        state === SORTABLE_DIRECTIONS.ASC
+          ? SORTABLE_DIRECTIONS.DESC
+          : SORTABLE_DIRECTIONS.ASC
+      );
     } else {
       setOrder(key);
       setOrderDirection(SORTABLE_DIRECTIONS.ASC);
@@ -21,6 +25,24 @@ const useSortable = () => {
   };
 };
 
-export {
-  useSortable
+const useDataManager = (defaultData = []) => {
+  const [data, setData] = useState(defaultData);
+
+  const onAdd = (rows, index) => {
+    const tmpData = [...data];
+    tmpData.splice(
+      index,
+      0,
+      ...rows.map((r) => ({ ...r, rowType: ROW_TYPE.VIEW }))
+    );
+    setData(tmpData);
+  };
+
+  return {
+    data,
+    setData,
+    onAdd
+  };
 };
+
+export { useSortable, useDataManager };
