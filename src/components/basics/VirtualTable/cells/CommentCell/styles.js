@@ -43,16 +43,17 @@ const useStyles = makeStyles(() => ({
     height: '8px',
     width: '8px',
     transform: 'translate(8px, -8px)',
-    color: 'white'
+    color: 'white',
+    boxSizing: 'content-box'
   },
   containerComment: {
-    overflow: 'scroll',
+    overflow: 'auto',
     maxHeight: '200px'
   },
   separatorComment: {
     padding: '4px 0',
     borderBottom: '#e7e7e7 1px solid'
-  } }
-));
+  }
+}));
 
 export default useStyles;

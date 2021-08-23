@@ -92,7 +92,9 @@ const config = {
   }, {
     key: 'files'
   }, {
-    key: 'comments'
+    key: 'comments',
+    showLastComment: true,
+    canEdit: true
   }, {
     key: 'date'
   }, {

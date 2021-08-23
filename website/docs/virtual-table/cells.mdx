@@ -99,10 +99,12 @@ Autocomplete with multiple choices
 ```
 | Name | Type | Required | Default | Description | 
 | --- | --- | --- | --- | --- | 
+| `canEdit` | bool | No | `false` | If `true`, the comment can be updated |
 | `commentKey` | string | Yes |  | The primaryKey of the body param sent to the api |
 | `getComments` | bool | No | `false` | If `true`, the getComment api endpoint on component mount  | 
 | `location` | string | Yes  |  | The `location` body param sent to the api |
 | `refreshComment` | func | No | `() => {}` | Callback fired when the getComment api endpoint is called (CRUD). It receives two arguments, the new comments list and the current object id based on `selectableRowKey`   | 
+| `showLastComment` | bool | No | `false` | If `true`, a tooltip containing the last comment is displayed when the mouse is over the icon |
 
 ## Date
 ```mdx-code-block
