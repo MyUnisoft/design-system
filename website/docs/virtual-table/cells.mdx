@@ -1,0 +1,188 @@
+---
+sidebar_position: 1
+title: Cells
+---
+
+import CellTypePreviewer from '@site/src/components/VirtualTable/Cells';
+
+
+## Amount
+Display the value in numeral format.
+```mdx-code-block
+<CellTypePreviewer type="amount" dataKey="price"  />
+```
+
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `formatAmount` | func | No | formatNumber Helper | Parses the value to return a formatted string. |
+
+## Attachment
+```mdx-code-block
+<CellTypePreviewer type="attachment" dataKey="files"  />
+```
+
+## Autocomplete
+```mdx-code-block
+<CellTypePreviewer type="autocomplete" dataKey="language" />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `disableClearable` | bool | No | `true` | If `true`, the input can't be cleared. |
+| `optionList` | func \| array | No | `[]` | Function called or array used to populate the suggestions list. | 
+
+## Badge Status
+```mdx-code-block
+<CellTypePreviewer type="badge_status" dataKey="badgeStatus"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `actionsByStatus` | array | No | `[]` | Array of actionByStatus passed to `ContextMenu` component | 
+
+### actionByStatus
+
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `action` | func | Yes | | Callback fired when the choice is selected |
+| `label` | any | Yes | | Element passed as a children to `MenuItem` |
+| `status` | array | Yes | | Array of status that allows this choice | 
+
+## Switch Bagde 
+???
+```mdx-code-block
+<CellTypePreviewer type="switch_badge_status" dataKey="switchBadgeStatus"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `switchKey` | string | Yes | |  |
+| `actionsByStatus` | array | No | `[]` | Array of actionByStatus passed to `ContextMenu` component | 
+
+## Button
+```mdx-code-block
+<CellTypePreviewer type="button" dataKey="button"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `isDisabled` | bool | No | `false` | If `true`, the button will be disabled. |
+| `handleClick` | func | No | `() => {}` | Callback fired when the button is clicked |
+| `label` | any | No | `''` | Element passed as a children to `Button` |
+| `showCellButton` | bool | No | `true` | If `false`, the button is not rendered |
+
+## Checkbox
+```mdx-code-block
+<CellTypePreviewer type="check_box" dataKey="price" />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `isDisabled` | bool | No | `false` | If `true`, the button will be disabled. |
+| `changeOtherColumnOnClick` | columnChange | No | | If defined, another column value is changed when the value changes |
+| `changeValue` | func | No | `() => {}` | |
+| `variant` | `'primary'` \| `'error'` | No | `'primary'` | |
+
+### columnChange
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `keyColumn` | string | Yes | | The column to change |
+| `value` | any | Yes | | The new value |
+
+## Chip
+Autocomplete with multiple choices
+```mdx-code-block
+<CellTypePreviewer type="chip" dataKey="spokenLanguages" />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `listOptions` | array | No | `[]` | Array used to populate the suggestions list. | 
+
+## Comment
+```mdx-code-block
+<CellTypePreviewer type="comment" dataKey="comments"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `commentKey` | string | Yes |  | The primaryKey of the body param sent to the api |
+| `getComments` | bool | No | `false` | If `true`, the getComment api endpoint on component mount  | 
+| `location` | string | Yes  |  | The `location` body param sent to the api |
+| `refreshComment` | func | No | `() => {}` | Callback fired when the getComment api endpoint is called (CRUD). It receives two arguments, the new comments list and the current object id based on `selectableRowKey`   | 
+
+## Date
+```mdx-code-block
+<CellTypePreviewer type="date" dataKey="date"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `changeValue` | func | No | `() => {}` | |
+| `formatDate` | string | No | `DD/MM/YYYY` | The entering date format. **Not the displayed format** |
+
+## Multiple
+```mdx-code-block
+<CellTypePreviewer type="multiple" dataKey="multiple"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `` |  |  | |  |
+
+## Number
+```mdx-code-block
+<CellTypePreviewer type="number" dataKey="price"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `changeValue` | func | No | `() => {}` | |
+| `isDisabled` | func | No | `() => false` | If the function returns `true`, the input is disabled. The function receives the row data as uniq argument |
+
+## Select
+```mdx-code-block
+<CellTypePreviewer type="select" dataKey="language"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `changeValue` | func | No | `() => {}` | |
+| `isDisabled` | func | No | `() => false` | If the function returns `true`, the input is disabled. The function receives the row data as uniq argument |
+| `listData` | array | No | `[]` | Array of selectOption |
+
+### selectOption
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `name` | any | Yes | | Element passed as children to `MenuItem` and `div`|
+| `value` | string | Yes | | |
+
+
+## Status
+```mdx-code-block
+<CellTypePreviewer type="status" dataKey="language"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `listStatus` | array | No | `[]` | Array of statusOption |
+
+### statusOption
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `showMenu` | array | No | `[]` | If the current value is in the array, then the option is part of the suggestion list. |
+| `status` | number \| string | Yes | | The value returned when the input changes |
+| `value` | any | Yes | | Element passed as children to `MenuItem`. |
+
+## String
+```mdx-code-block
+<CellTypePreviewer type="string" dataKey="price"  />
+```
+| Name | Type | Required | Default | Description | 
+| --- | --- | --- | --- | --- | 
+| `changeValue` | func | No | `() => {}` | |
+| `isDisabled` | func | No | `() => false` | If the function returns `true`, the input is disabled. The function receives the row data as uniq argument |
+
+## Thumbnail
+```mdx-code-block
+<CellTypePreviewer type="thumbnail" dataKey="files"  />
+```
+
+## Wallet
+```mdx-code-block
+<CellTypePreviewer type="wallet" dataKey="wallets"  />
+```
+<!-- 
+
+## Custom
+```mdx-code-block
+// <CellTypePreviewer type="component" dataKey="price"  />
+``` -->

@@ -1,4 +1,4 @@
-import { createTheme  } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 
 const primaryColor = '#0bd1d1';
 const grey200 = '#EDEDED';
@@ -6,12 +6,12 @@ const grey200 = '#EDEDED';
 const theme = createTheme({
   palette: {
     menu_color: {
-      background: "#000",
+      background: '#000',
       selected: '#0BD1D1'
     },
-    unfolded_menu:{
-      background: "#000",
-      text: "#fff"
+    unfolded_menu: {
+      background: '#000',
+      text: '#fff'
     },
     common: {
       grey: '#e3e3e3',
@@ -83,6 +83,7 @@ const theme = createTheme({
       }
     }
   },
+
   shape: {
     borderRadius: 2
   },
@@ -160,10 +161,11 @@ const theme = createTheme({
         }
       },
       input: {
-        '&[type=number]::-webkit-inner-spin-button, &[type=number]::-webkit-outer-spin-button': {
-          margin: 0,
-          WebkitAppearance: 'none'
-        }
+        '&[type=number]::-webkit-inner-spin-button, &[type=number]::-webkit-outer-spin-button':
+          {
+            margin: 0,
+            WebkitAppearance: 'none'
+          }
       }
     },
     MuiSnackbar: {

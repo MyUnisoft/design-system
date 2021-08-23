@@ -5,7 +5,7 @@ import VirtualTableContext from '../../../context';
 const ViewSelectCell = memo(function ViewSelectCell({ data, columnIndex }) {
   const { config } = useContext(VirtualTableContext);
   const { columns = [] } = config;
-  const { listData } = columns[columnIndex];
+  const { listData = [] } = columns[columnIndex];
 
   const currentCellValue = listData.find(({ value }) => value === data);
 

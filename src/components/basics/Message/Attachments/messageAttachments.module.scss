@@ -4,6 +4,11 @@
 
   display: flex;
   flex-wrap: wrap;
+
+  & a {
+    text-decoration: none;
+    display: flex;
+  }
 }
 
 .item {
@@ -15,10 +20,6 @@
   margin-right: 15px;  // use RIGHT to left-align items
 }
 
-a {
-  text-decoration: none;
-  display: flex;
-}
 
 .button {
   display: flex;
