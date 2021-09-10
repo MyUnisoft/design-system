@@ -364,7 +364,7 @@ function createAdjustMap(values) {
 "use strict";
 
 
-var schema = __webpack_require__(67470)
+var schema = __webpack_require__(97247)
 var factory = __webpack_require__(62502)
 
 var html = factory(schema, 'div')
@@ -1022,7 +1022,7 @@ function camelcase($0) {
 
 /***/ }),
 
-/***/ 67470:
+/***/ 97247:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
