@@ -114,6 +114,254 @@ function parse(selector, defaultTagName) {
 
 /***/ }),
 
+/***/ 62502:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var find = __webpack_require__(99560)
+var normalize = __webpack_require__(66632)
+var parseSelector = __webpack_require__(78892)
+var spaces = (__webpack_require__(36582)/* .parse */ .Q)
+var commas = (__webpack_require__(56851)/* .parse */ .Q)
+
+module.exports = factory
+
+var own = {}.hasOwnProperty
+
+function factory(schema, defaultTagName, caseSensitive) {
+  var adjust = caseSensitive ? createAdjustMap(caseSensitive) : null
+
+  return h
+
+  // Hyperscript compatible DSL for creating virtual hast trees.
+  function h(selector, properties) {
+    var node = parseSelector(selector, defaultTagName)
+    var children = Array.prototype.slice.call(arguments, 2)
+    var name = node.tagName.toLowerCase()
+    var property
+
+    node.tagName = adjust && own.call(adjust, name) ? adjust[name] : name
+
+    if (properties && isChildren(properties, node)) {
+      children.unshift(properties)
+      properties = null
+    }
+
+    if (properties) {
+      for (property in properties) {
+        addProperty(node.properties, property, properties[property])
+      }
+    }
+
+    addChild(node.children, children)
+
+    if (node.tagName === 'template') {
+      node.content = {type: 'root', children: node.children}
+      node.children = []
+    }
+
+    return node
+  }
+
+  function addProperty(properties, key, value) {
+    var info
+    var property
+    var result
+
+    // Ignore nully and NaN values.
+    if (value === null || value === undefined || value !== value) {
+      return
+    }
+
+    info = find(schema, key)
+    property = info.property
+    result = value
+
+    // Handle list values.
+    if (typeof result === 'string') {
+      if (info.spaceSeparated) {
+        result = spaces(result)
+      } else if (info.commaSeparated) {
+        result = commas(result)
+      } else if (info.commaOrSpaceSeparated) {
+        result = spaces(commas(result).join(' '))
+      }
+    }
+
+    // Accept `object` on style.
+    if (property === 'style' && typeof value !== 'string') {
+      result = style(result)
+    }
+
+    // Class-names (which can be added both on the `selector` and here).
+    if (property === 'className' && properties.className) {
+      result = properties.className.concat(result)
+    }
+
+    properties[property] = parsePrimitives(info, property, result)
+  }
+}
+
+function isChildren(value, node) {
+  return (
+    typeof value === 'string' ||
+    'length' in value ||
+    isNode(node.tagName, value)
+  )
+}
+
+function isNode(tagName, value) {
+  var type = value.type
+
+  if (tagName === 'input' || !type || typeof type !== 'string') {
+    return false
+  }
+
+  if (typeof value.children === 'object' && 'length' in value.children) {
+    return true
+  }
+
+  type = type.toLowerCase()
+
+  if (tagName === 'button') {
+    return (
+      type !== 'menu' &&
+      type !== 'submit' &&
+      type !== 'reset' &&
+      type !== 'button'
+    )
+  }
+
+  return 'value' in value
+}
+
+function addChild(nodes, value) {
+  var index
+  var length
+
+  if (typeof value === 'string' || typeof value === 'number') {
+    nodes.push({type: 'text', value: String(value)})
+    return
+  }
+
+  if (typeof value === 'object' && 'length' in value) {
+    index = -1
+    length = value.length
+
+    while (++index < length) {
+      addChild(nodes, value[index])
+    }
+
+    return
+  }
+
+  if (typeof value !== 'object' || !('type' in value)) {
+    throw new Error('Expected node, nodes, or string, got `' + value + '`')
+  }
+
+  nodes.push(value)
+}
+
+// Parse a (list of) primitives.
+function parsePrimitives(info, name, value) {
+  var index
+  var length
+  var result
+
+  if (typeof value !== 'object' || !('length' in value)) {
+    return parsePrimitive(info, name, value)
+  }
+
+  length = value.length
+  index = -1
+  result = []
+
+  while (++index < length) {
+    result[index] = parsePrimitive(info, name, value[index])
+  }
+
+  return result
+}
+
+// Parse a single primitives.
+function parsePrimitive(info, name, value) {
+  var result = value
+
+  if (info.number || info.positiveNumber) {
+    if (!isNaN(result) && result !== '') {
+      result = Number(result)
+    }
+  } else if (info.boolean || info.overloadedBoolean) {
+    // Accept `boolean` and `string`.
+    if (
+      typeof result === 'string' &&
+      (result === '' || normalize(value) === normalize(name))
+    ) {
+      result = true
+    }
+  }
+
+  return result
+}
+
+function style(value) {
+  var result = []
+  var key
+
+  for (key in value) {
+    result.push([key, value[key]].join(': '))
+  }
+
+  return result.join('; ')
+}
+
+function createAdjustMap(values) {
+  var length = values.length
+  var index = -1
+  var result = {}
+  var value
+
+  while (++index < length) {
+    value = values[index]
+    result[value.toLowerCase()] = value
+  }
+
+  return result
+}
+
+
+/***/ }),
+
+/***/ 52579:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var schema = __webpack_require__(97247)
+var factory = __webpack_require__(62502)
+
+var html = factory(schema, 'div')
+html.displayName = 'html'
+
+module.exports = html
+
+
+/***/ }),
+
+/***/ 31742:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = __webpack_require__(52579)
+
+
+/***/ }),
+
 /***/ 46260:
 /***/ ((module) => {
 
@@ -192,6 +440,485 @@ function hexadecimal(character) {
     (code >= 97 /* a */ && code <= 102) /* z */ ||
     (code >= 65 /* A */ && code <= 70) /* Z */ ||
     (code >= 48 /* A */ && code <= 57) /* Z */
+  )
+}
+
+
+/***/ }),
+
+/***/ 17621:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var characterEntities = __webpack_require__(82661)
+
+module.exports = decodeEntity
+
+var own = {}.hasOwnProperty
+
+function decodeEntity(characters) {
+  return own.call(characterEntities, characters)
+    ? characterEntities[characters]
+    : false
+}
+
+
+/***/ }),
+
+/***/ 57574:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var legacy = __webpack_require__(37452)
+var invalid = __webpack_require__(93580)
+var decimal = __webpack_require__(46195)
+var hexadecimal = __webpack_require__(79480)
+var alphanumerical = __webpack_require__(7961)
+var decodeEntity = __webpack_require__(17621)
+
+module.exports = parseEntities
+
+var own = {}.hasOwnProperty
+var fromCharCode = String.fromCharCode
+var noop = Function.prototype
+
+// Default settings.
+var defaults = {
+  warning: null,
+  reference: null,
+  text: null,
+  warningContext: null,
+  referenceContext: null,
+  textContext: null,
+  position: {},
+  additional: null,
+  attribute: false,
+  nonTerminated: true
+}
+
+// Characters.
+var tab = 9 // '\t'
+var lineFeed = 10 // '\n'
+var formFeed = 12 //  '\f'
+var space = 32 // ' '
+var ampersand = 38 //  '&'
+var semicolon = 59 //  ';'
+var lessThan = 60 //  '<'
+var equalsTo = 61 //  '='
+var numberSign = 35 //  '#'
+var uppercaseX = 88 //  'X'
+var lowercaseX = 120 //  'x'
+var replacementCharacter = 65533 // '�'
+
+// Reference types.
+var name = 'named'
+var hexa = 'hexadecimal'
+var deci = 'decimal'
+
+// Map of bases.
+var bases = {}
+
+bases[hexa] = 16
+bases[deci] = 10
+
+// Map of types to tests.
+// Each type of character reference accepts different characters.
+// This test is used to detect whether a reference has ended (as the semicolon
+// is not strictly needed).
+var tests = {}
+
+tests[name] = alphanumerical
+tests[deci] = decimal
+tests[hexa] = hexadecimal
+
+// Warning types.
+var namedNotTerminated = 1
+var numericNotTerminated = 2
+var namedEmpty = 3
+var numericEmpty = 4
+var namedUnknown = 5
+var numericDisallowed = 6
+var numericProhibited = 7
+
+// Warning messages.
+var messages = {}
+
+messages[namedNotTerminated] =
+  'Named character references must be terminated by a semicolon'
+messages[numericNotTerminated] =
+  'Numeric character references must be terminated by a semicolon'
+messages[namedEmpty] = 'Named character references cannot be empty'
+messages[numericEmpty] = 'Numeric character references cannot be empty'
+messages[namedUnknown] = 'Named character references must be known'
+messages[numericDisallowed] =
+  'Numeric character references cannot be disallowed'
+messages[numericProhibited] =
+  'Numeric character references cannot be outside the permissible Unicode range'
+
+// Wrap to ensure clean parameters are given to `parse`.
+function parseEntities(value, options) {
+  var settings = {}
+  var option
+  var key
+
+  if (!options) {
+    options = {}
+  }
+
+  for (key in defaults) {
+    option = options[key]
+    settings[key] =
+      option === null || option === undefined ? defaults[key] : option
+  }
+
+  if (settings.position.indent || settings.position.start) {
+    settings.indent = settings.position.indent || []
+    settings.position = settings.position.start
+  }
+
+  return parse(value, settings)
+}
+
+// Parse entities.
+// eslint-disable-next-line complexity
+function parse(value, settings) {
+  var additional = settings.additional
+  var nonTerminated = settings.nonTerminated
+  var handleText = settings.text
+  var handleReference = settings.reference
+  var handleWarning = settings.warning
+  var textContext = settings.textContext
+  var referenceContext = settings.referenceContext
+  var warningContext = settings.warningContext
+  var pos = settings.position
+  var indent = settings.indent || []
+  var length = value.length
+  var index = 0
+  var lines = -1
+  var column = pos.column || 1
+  var line = pos.line || 1
+  var queue = ''
+  var result = []
+  var entityCharacters
+  var namedEntity
+  var terminated
+  var characters
+  var character
+  var reference
+  var following
+  var warning
+  var reason
+  var output
+  var entity
+  var begin
+  var start
+  var type
+  var test
+  var prev
+  var next
+  var diff
+  var end
+
+  if (typeof additional === 'string') {
+    additional = additional.charCodeAt(0)
+  }
+
+  // Cache the current point.
+  prev = now()
+
+  // Wrap `handleWarning`.
+  warning = handleWarning ? parseError : noop
+
+  // Ensure the algorithm walks over the first character and the end (inclusive).
+  index--
+  length++
+
+  while (++index < length) {
+    // If the previous character was a newline.
+    if (character === lineFeed) {
+      column = indent[lines] || 1
+    }
+
+    character = value.charCodeAt(index)
+
+    if (character === ampersand) {
+      following = value.charCodeAt(index + 1)
+
+      // The behaviour depends on the identity of the next character.
+      if (
+        following === tab ||
+        following === lineFeed ||
+        following === formFeed ||
+        following === space ||
+        following === ampersand ||
+        following === lessThan ||
+        following !== following ||
+        (additional && following === additional)
+      ) {
+        // Not a character reference.
+        // No characters are consumed, and nothing is returned.
+        // This is not an error, either.
+        queue += fromCharCode(character)
+        column++
+
+        continue
+      }
+
+      start = index + 1
+      begin = start
+      end = start
+
+      if (following === numberSign) {
+        // Numerical entity.
+        end = ++begin
+
+        // The behaviour further depends on the next character.
+        following = value.charCodeAt(end)
+
+        if (following === uppercaseX || following === lowercaseX) {
+          // ASCII hex digits.
+          type = hexa
+          end = ++begin
+        } else {
+          // ASCII digits.
+          type = deci
+        }
+      } else {
+        // Named entity.
+        type = name
+      }
+
+      entityCharacters = ''
+      entity = ''
+      characters = ''
+      test = tests[type]
+      end--
+
+      while (++end < length) {
+        following = value.charCodeAt(end)
+
+        if (!test(following)) {
+          break
+        }
+
+        characters += fromCharCode(following)
+
+        // Check if we can match a legacy named reference.
+        // If so, we cache that as the last viable named reference.
+        // This ensures we do not need to walk backwards later.
+        if (type === name && own.call(legacy, characters)) {
+          entityCharacters = characters
+          entity = legacy[characters]
+        }
+      }
+
+      terminated = value.charCodeAt(end) === semicolon
+
+      if (terminated) {
+        end++
+
+        namedEntity = type === name ? decodeEntity(characters) : false
+
+        if (namedEntity) {
+          entityCharacters = characters
+          entity = namedEntity
+        }
+      }
+
+      diff = 1 + end - start
+
+      if (!terminated && !nonTerminated) {
+        // Empty.
+      } else if (!characters) {
+        // An empty (possible) entity is valid, unless it’s numeric (thus an
+        // ampersand followed by an octothorp).
+        if (type !== name) {
+          warning(numericEmpty, diff)
+        }
+      } else if (type === name) {
+        // An ampersand followed by anything unknown, and not terminated, is
+        // invalid.
+        if (terminated && !entity) {
+          warning(namedUnknown, 1)
+        } else {
+          // If theres something after an entity name which is not known, cap
+          // the reference.
+          if (entityCharacters !== characters) {
+            end = begin + entityCharacters.length
+            diff = 1 + end - begin
+            terminated = false
+          }
+
+          // If the reference is not terminated, warn.
+          if (!terminated) {
+            reason = entityCharacters ? namedNotTerminated : namedEmpty
+
+            if (settings.attribute) {
+              following = value.charCodeAt(end)
+
+              if (following === equalsTo) {
+                warning(reason, diff)
+                entity = null
+              } else if (alphanumerical(following)) {
+                entity = null
+              } else {
+                warning(reason, diff)
+              }
+            } else {
+              warning(reason, diff)
+            }
+          }
+        }
+
+        reference = entity
+      } else {
+        if (!terminated) {
+          // All non-terminated numeric entities are not rendered, and trigger a
+          // warning.
+          warning(numericNotTerminated, diff)
+        }
+
+        // When terminated and number, parse as either hexadecimal or decimal.
+        reference = parseInt(characters, bases[type])
+
+        // Trigger a warning when the parsed number is prohibited, and replace
+        // with replacement character.
+        if (prohibited(reference)) {
+          warning(numericProhibited, diff)
+          reference = fromCharCode(replacementCharacter)
+        } else if (reference in invalid) {
+          // Trigger a warning when the parsed number is disallowed, and replace
+          // by an alternative.
+          warning(numericDisallowed, diff)
+          reference = invalid[reference]
+        } else {
+          // Parse the number.
+          output = ''
+
+          // Trigger a warning when the parsed number should not be used.
+          if (disallowed(reference)) {
+            warning(numericDisallowed, diff)
+          }
+
+          // Stringify the number.
+          if (reference > 0xffff) {
+            reference -= 0x10000
+            output += fromCharCode((reference >>> (10 & 0x3ff)) | 0xd800)
+            reference = 0xdc00 | (reference & 0x3ff)
+          }
+
+          reference = output + fromCharCode(reference)
+        }
+      }
+
+      // Found it!
+      // First eat the queued characters as normal text, then eat an entity.
+      if (reference) {
+        flush()
+
+        prev = now()
+        index = end - 1
+        column += end - start + 1
+        result.push(reference)
+        next = now()
+        next.offset++
+
+        if (handleReference) {
+          handleReference.call(
+            referenceContext,
+            reference,
+            {start: prev, end: next},
+            value.slice(start - 1, end)
+          )
+        }
+
+        prev = next
+      } else {
+        // If we could not find a reference, queue the checked characters (as
+        // normal characters), and move the pointer to their end.
+        // This is possible because we can be certain neither newlines nor
+        // ampersands are included.
+        characters = value.slice(start - 1, end)
+        queue += characters
+        column += characters.length
+        index = end - 1
+      }
+    } else {
+      // Handle anything other than an ampersand, including newlines and EOF.
+      if (
+        character === 10 // Line feed
+      ) {
+        line++
+        lines++
+        column = 0
+      }
+
+      if (character === character) {
+        queue += fromCharCode(character)
+        column++
+      } else {
+        flush()
+      }
+    }
+  }
+
+  // Return the reduced nodes, and any possible warnings.
+  return result.join('')
+
+  // Get current position.
+  function now() {
+    return {
+      line: line,
+      column: column,
+      offset: index + (pos.offset || 0)
+    }
+  }
+
+  // “Throw” a parse-error: a warning.
+  function parseError(code, offset) {
+    var position = now()
+
+    position.column += offset
+    position.offset += offset
+
+    handleWarning.call(warningContext, messages[code], position, code)
+  }
+
+  // Flush `queue` (normal text).
+  // Macro invoked before each entity and at the end of `value`.
+  // Does nothing when `queue` is empty.
+  function flush() {
+    if (queue) {
+      result.push(queue)
+
+      if (handleText) {
+        handleText.call(textContext, queue, {start: prev, end: now()})
+      }
+
+      queue = ''
+    }
+  }
+}
+
+// Check if `character` is outside the permissible unicode range.
+function prohibited(code) {
+  return (code >= 0xd800 && code <= 0xdfff) || code > 0x10ffff
+}
+
+// Check if `character` is disallowed.
+function disallowed(code) {
+  return (
+    (code >= 0x0001 && code <= 0x0008) ||
+    code === 0x000b ||
+    (code >= 0x000d && code <= 0x001f) ||
+    (code >= 0x007f && code <= 0x009f) ||
+    (code >= 0xfdd0 && code <= 0xfdef) ||
+    (code & 0xffff) === 0xffff ||
+    (code & 0xffff) === 0xfffe
   )
 }
 
@@ -1040,8 +1767,8 @@ ctx.Prism = {manual: true, disableWorkerMessageHandler: true}
 
 // Load all stuff in `prism.js` itself, except for `prism-file-highlight.js`.
 // The wrapped non-leaky grammars are loaded instead of Prism’s originals.
-var h = __webpack_require__(90871)
-var decode = __webpack_require__(22921)
+var h = __webpack_require__(31742)
+var decode = __webpack_require__(57574)
 var Prism = __webpack_require__(59216)
 var markup = __webpack_require__(2717)
 var css = __webpack_require__(12049)
@@ -1589,733 +2316,6 @@ function markup(Prism) {
   Prism.languages.html = Prism.languages.markup
   Prism.languages.mathml = Prism.languages.markup
   Prism.languages.svg = Prism.languages.markup
-}
-
-
-/***/ }),
-
-/***/ 6509:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var find = __webpack_require__(99560)
-var normalize = __webpack_require__(66632)
-var parseSelector = __webpack_require__(78892)
-var spaces = (__webpack_require__(36582)/* .parse */ .Q)
-var commas = (__webpack_require__(56851)/* .parse */ .Q)
-
-module.exports = factory
-
-var own = {}.hasOwnProperty
-
-function factory(schema, defaultTagName, caseSensitive) {
-  var adjust = caseSensitive ? createAdjustMap(caseSensitive) : null
-
-  return h
-
-  // Hyperscript compatible DSL for creating virtual hast trees.
-  function h(selector, properties) {
-    var node = parseSelector(selector, defaultTagName)
-    var children = Array.prototype.slice.call(arguments, 2)
-    var name = node.tagName.toLowerCase()
-    var property
-
-    node.tagName = adjust && own.call(adjust, name) ? adjust[name] : name
-
-    if (properties && isChildren(properties, node)) {
-      children.unshift(properties)
-      properties = null
-    }
-
-    if (properties) {
-      for (property in properties) {
-        addProperty(node.properties, property, properties[property])
-      }
-    }
-
-    addChild(node.children, children)
-
-    if (node.tagName === 'template') {
-      node.content = {type: 'root', children: node.children}
-      node.children = []
-    }
-
-    return node
-  }
-
-  function addProperty(properties, key, value) {
-    var info
-    var property
-    var result
-
-    // Ignore nully and NaN values.
-    if (value === null || value === undefined || value !== value) {
-      return
-    }
-
-    info = find(schema, key)
-    property = info.property
-    result = value
-
-    // Handle list values.
-    if (typeof result === 'string') {
-      if (info.spaceSeparated) {
-        result = spaces(result)
-      } else if (info.commaSeparated) {
-        result = commas(result)
-      } else if (info.commaOrSpaceSeparated) {
-        result = spaces(commas(result).join(' '))
-      }
-    }
-
-    // Accept `object` on style.
-    if (property === 'style' && typeof value !== 'string') {
-      result = style(result)
-    }
-
-    // Class-names (which can be added both on the `selector` and here).
-    if (property === 'className' && properties.className) {
-      result = properties.className.concat(result)
-    }
-
-    properties[property] = parsePrimitives(info, property, result)
-  }
-}
-
-function isChildren(value, node) {
-  return (
-    typeof value === 'string' ||
-    'length' in value ||
-    isNode(node.tagName, value)
-  )
-}
-
-function isNode(tagName, value) {
-  var type = value.type
-
-  if (tagName === 'input' || !type || typeof type !== 'string') {
-    return false
-  }
-
-  if (typeof value.children === 'object' && 'length' in value.children) {
-    return true
-  }
-
-  type = type.toLowerCase()
-
-  if (tagName === 'button') {
-    return (
-      type !== 'menu' &&
-      type !== 'submit' &&
-      type !== 'reset' &&
-      type !== 'button'
-    )
-  }
-
-  return 'value' in value
-}
-
-function addChild(nodes, value) {
-  var index
-  var length
-
-  if (typeof value === 'string' || typeof value === 'number') {
-    nodes.push({type: 'text', value: String(value)})
-    return
-  }
-
-  if (typeof value === 'object' && 'length' in value) {
-    index = -1
-    length = value.length
-
-    while (++index < length) {
-      addChild(nodes, value[index])
-    }
-
-    return
-  }
-
-  if (typeof value !== 'object' || !('type' in value)) {
-    throw new Error('Expected node, nodes, or string, got `' + value + '`')
-  }
-
-  nodes.push(value)
-}
-
-// Parse a (list of) primitives.
-function parsePrimitives(info, name, value) {
-  var index
-  var length
-  var result
-
-  if (typeof value !== 'object' || !('length' in value)) {
-    return parsePrimitive(info, name, value)
-  }
-
-  length = value.length
-  index = -1
-  result = []
-
-  while (++index < length) {
-    result[index] = parsePrimitive(info, name, value[index])
-  }
-
-  return result
-}
-
-// Parse a single primitives.
-function parsePrimitive(info, name, value) {
-  var result = value
-
-  if (info.number || info.positiveNumber) {
-    if (!isNaN(result) && result !== '') {
-      result = Number(result)
-    }
-  } else if (info.boolean || info.overloadedBoolean) {
-    // Accept `boolean` and `string`.
-    if (
-      typeof result === 'string' &&
-      (result === '' || normalize(value) === normalize(name))
-    ) {
-      result = true
-    }
-  }
-
-  return result
-}
-
-function style(value) {
-  var result = []
-  var key
-
-  for (key in value) {
-    result.push([key, value[key]].join(': '))
-  }
-
-  return result.join('; ')
-}
-
-function createAdjustMap(values) {
-  var length = values.length
-  var index = -1
-  var result = {}
-  var value
-
-  while (++index < length) {
-    value = values[index]
-    result[value.toLowerCase()] = value
-  }
-
-  return result
-}
-
-
-/***/ }),
-
-/***/ 51575:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var schema = __webpack_require__(97247)
-var factory = __webpack_require__(6509)
-
-var html = factory(schema, 'div')
-html.displayName = 'html'
-
-module.exports = html
-
-
-/***/ }),
-
-/***/ 90871:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-module.exports = __webpack_require__(51575)
-
-
-/***/ }),
-
-/***/ 47883:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var characterEntities = __webpack_require__(82661)
-
-module.exports = decodeEntity
-
-var own = {}.hasOwnProperty
-
-function decodeEntity(characters) {
-  return own.call(characterEntities, characters)
-    ? characterEntities[characters]
-    : false
-}
-
-
-/***/ }),
-
-/***/ 22921:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var legacy = __webpack_require__(37452)
-var invalid = __webpack_require__(93580)
-var decimal = __webpack_require__(46195)
-var hexadecimal = __webpack_require__(79480)
-var alphanumerical = __webpack_require__(7961)
-var decodeEntity = __webpack_require__(47883)
-
-module.exports = parseEntities
-
-var own = {}.hasOwnProperty
-var fromCharCode = String.fromCharCode
-var noop = Function.prototype
-
-// Default settings.
-var defaults = {
-  warning: null,
-  reference: null,
-  text: null,
-  warningContext: null,
-  referenceContext: null,
-  textContext: null,
-  position: {},
-  additional: null,
-  attribute: false,
-  nonTerminated: true
-}
-
-// Characters.
-var tab = 9 // '\t'
-var lineFeed = 10 // '\n'
-var formFeed = 12 //  '\f'
-var space = 32 // ' '
-var ampersand = 38 //  '&'
-var semicolon = 59 //  ';'
-var lessThan = 60 //  '<'
-var equalsTo = 61 //  '='
-var numberSign = 35 //  '#'
-var uppercaseX = 88 //  'X'
-var lowercaseX = 120 //  'x'
-var replacementCharacter = 65533 // '�'
-
-// Reference types.
-var name = 'named'
-var hexa = 'hexadecimal'
-var deci = 'decimal'
-
-// Map of bases.
-var bases = {}
-
-bases[hexa] = 16
-bases[deci] = 10
-
-// Map of types to tests.
-// Each type of character reference accepts different characters.
-// This test is used to detect whether a reference has ended (as the semicolon
-// is not strictly needed).
-var tests = {}
-
-tests[name] = alphanumerical
-tests[deci] = decimal
-tests[hexa] = hexadecimal
-
-// Warning types.
-var namedNotTerminated = 1
-var numericNotTerminated = 2
-var namedEmpty = 3
-var numericEmpty = 4
-var namedUnknown = 5
-var numericDisallowed = 6
-var numericProhibited = 7
-
-// Warning messages.
-var messages = {}
-
-messages[namedNotTerminated] =
-  'Named character references must be terminated by a semicolon'
-messages[numericNotTerminated] =
-  'Numeric character references must be terminated by a semicolon'
-messages[namedEmpty] = 'Named character references cannot be empty'
-messages[numericEmpty] = 'Numeric character references cannot be empty'
-messages[namedUnknown] = 'Named character references must be known'
-messages[numericDisallowed] =
-  'Numeric character references cannot be disallowed'
-messages[numericProhibited] =
-  'Numeric character references cannot be outside the permissible Unicode range'
-
-// Wrap to ensure clean parameters are given to `parse`.
-function parseEntities(value, options) {
-  var settings = {}
-  var option
-  var key
-
-  if (!options) {
-    options = {}
-  }
-
-  for (key in defaults) {
-    option = options[key]
-    settings[key] =
-      option === null || option === undefined ? defaults[key] : option
-  }
-
-  if (settings.position.indent || settings.position.start) {
-    settings.indent = settings.position.indent || []
-    settings.position = settings.position.start
-  }
-
-  return parse(value, settings)
-}
-
-// Parse entities.
-// eslint-disable-next-line complexity
-function parse(value, settings) {
-  var additional = settings.additional
-  var nonTerminated = settings.nonTerminated
-  var handleText = settings.text
-  var handleReference = settings.reference
-  var handleWarning = settings.warning
-  var textContext = settings.textContext
-  var referenceContext = settings.referenceContext
-  var warningContext = settings.warningContext
-  var pos = settings.position
-  var indent = settings.indent || []
-  var length = value.length
-  var index = 0
-  var lines = -1
-  var column = pos.column || 1
-  var line = pos.line || 1
-  var queue = ''
-  var result = []
-  var entityCharacters
-  var namedEntity
-  var terminated
-  var characters
-  var character
-  var reference
-  var following
-  var warning
-  var reason
-  var output
-  var entity
-  var begin
-  var start
-  var type
-  var test
-  var prev
-  var next
-  var diff
-  var end
-
-  if (typeof additional === 'string') {
-    additional = additional.charCodeAt(0)
-  }
-
-  // Cache the current point.
-  prev = now()
-
-  // Wrap `handleWarning`.
-  warning = handleWarning ? parseError : noop
-
-  // Ensure the algorithm walks over the first character and the end (inclusive).
-  index--
-  length++
-
-  while (++index < length) {
-    // If the previous character was a newline.
-    if (character === lineFeed) {
-      column = indent[lines] || 1
-    }
-
-    character = value.charCodeAt(index)
-
-    if (character === ampersand) {
-      following = value.charCodeAt(index + 1)
-
-      // The behaviour depends on the identity of the next character.
-      if (
-        following === tab ||
-        following === lineFeed ||
-        following === formFeed ||
-        following === space ||
-        following === ampersand ||
-        following === lessThan ||
-        following !== following ||
-        (additional && following === additional)
-      ) {
-        // Not a character reference.
-        // No characters are consumed, and nothing is returned.
-        // This is not an error, either.
-        queue += fromCharCode(character)
-        column++
-
-        continue
-      }
-
-      start = index + 1
-      begin = start
-      end = start
-
-      if (following === numberSign) {
-        // Numerical entity.
-        end = ++begin
-
-        // The behaviour further depends on the next character.
-        following = value.charCodeAt(end)
-
-        if (following === uppercaseX || following === lowercaseX) {
-          // ASCII hex digits.
-          type = hexa
-          end = ++begin
-        } else {
-          // ASCII digits.
-          type = deci
-        }
-      } else {
-        // Named entity.
-        type = name
-      }
-
-      entityCharacters = ''
-      entity = ''
-      characters = ''
-      test = tests[type]
-      end--
-
-      while (++end < length) {
-        following = value.charCodeAt(end)
-
-        if (!test(following)) {
-          break
-        }
-
-        characters += fromCharCode(following)
-
-        // Check if we can match a legacy named reference.
-        // If so, we cache that as the last viable named reference.
-        // This ensures we do not need to walk backwards later.
-        if (type === name && own.call(legacy, characters)) {
-          entityCharacters = characters
-          entity = legacy[characters]
-        }
-      }
-
-      terminated = value.charCodeAt(end) === semicolon
-
-      if (terminated) {
-        end++
-
-        namedEntity = type === name ? decodeEntity(characters) : false
-
-        if (namedEntity) {
-          entityCharacters = characters
-          entity = namedEntity
-        }
-      }
-
-      diff = 1 + end - start
-
-      if (!terminated && !nonTerminated) {
-        // Empty.
-      } else if (!characters) {
-        // An empty (possible) entity is valid, unless it’s numeric (thus an
-        // ampersand followed by an octothorp).
-        if (type !== name) {
-          warning(numericEmpty, diff)
-        }
-      } else if (type === name) {
-        // An ampersand followed by anything unknown, and not terminated, is
-        // invalid.
-        if (terminated && !entity) {
-          warning(namedUnknown, 1)
-        } else {
-          // If theres something after an entity name which is not known, cap
-          // the reference.
-          if (entityCharacters !== characters) {
-            end = begin + entityCharacters.length
-            diff = 1 + end - begin
-            terminated = false
-          }
-
-          // If the reference is not terminated, warn.
-          if (!terminated) {
-            reason = entityCharacters ? namedNotTerminated : namedEmpty
-
-            if (settings.attribute) {
-              following = value.charCodeAt(end)
-
-              if (following === equalsTo) {
-                warning(reason, diff)
-                entity = null
-              } else if (alphanumerical(following)) {
-                entity = null
-              } else {
-                warning(reason, diff)
-              }
-            } else {
-              warning(reason, diff)
-            }
-          }
-        }
-
-        reference = entity
-      } else {
-        if (!terminated) {
-          // All non-terminated numeric entities are not rendered, and trigger a
-          // warning.
-          warning(numericNotTerminated, diff)
-        }
-
-        // When terminated and number, parse as either hexadecimal or decimal.
-        reference = parseInt(characters, bases[type])
-
-        // Trigger a warning when the parsed number is prohibited, and replace
-        // with replacement character.
-        if (prohibited(reference)) {
-          warning(numericProhibited, diff)
-          reference = fromCharCode(replacementCharacter)
-        } else if (reference in invalid) {
-          // Trigger a warning when the parsed number is disallowed, and replace
-          // by an alternative.
-          warning(numericDisallowed, diff)
-          reference = invalid[reference]
-        } else {
-          // Parse the number.
-          output = ''
-
-          // Trigger a warning when the parsed number should not be used.
-          if (disallowed(reference)) {
-            warning(numericDisallowed, diff)
-          }
-
-          // Stringify the number.
-          if (reference > 0xffff) {
-            reference -= 0x10000
-            output += fromCharCode((reference >>> (10 & 0x3ff)) | 0xd800)
-            reference = 0xdc00 | (reference & 0x3ff)
-          }
-
-          reference = output + fromCharCode(reference)
-        }
-      }
-
-      // Found it!
-      // First eat the queued characters as normal text, then eat an entity.
-      if (reference) {
-        flush()
-
-        prev = now()
-        index = end - 1
-        column += end - start + 1
-        result.push(reference)
-        next = now()
-        next.offset++
-
-        if (handleReference) {
-          handleReference.call(
-            referenceContext,
-            reference,
-            {start: prev, end: next},
-            value.slice(start - 1, end)
-          )
-        }
-
-        prev = next
-      } else {
-        // If we could not find a reference, queue the checked characters (as
-        // normal characters), and move the pointer to their end.
-        // This is possible because we can be certain neither newlines nor
-        // ampersands are included.
-        characters = value.slice(start - 1, end)
-        queue += characters
-        column += characters.length
-        index = end - 1
-      }
-    } else {
-      // Handle anything other than an ampersand, including newlines and EOF.
-      if (
-        character === 10 // Line feed
-      ) {
-        line++
-        lines++
-        column = 0
-      }
-
-      if (character === character) {
-        queue += fromCharCode(character)
-        column++
-      } else {
-        flush()
-      }
-    }
-  }
-
-  // Return the reduced nodes, and any possible warnings.
-  return result.join('')
-
-  // Get current position.
-  function now() {
-    return {
-      line: line,
-      column: column,
-      offset: index + (pos.offset || 0)
-    }
-  }
-
-  // “Throw” a parse-error: a warning.
-  function parseError(code, offset) {
-    var position = now()
-
-    position.column += offset
-    position.offset += offset
-
-    handleWarning.call(warningContext, messages[code], position, code)
-  }
-
-  // Flush `queue` (normal text).
-  // Macro invoked before each entity and at the end of `value`.
-  // Does nothing when `queue` is empty.
-  function flush() {
-    if (queue) {
-      result.push(queue)
-
-      if (handleText) {
-        handleText.call(textContext, queue, {start: prev, end: now()})
-      }
-
-      queue = ''
-    }
-  }
-}
-
-// Check if `character` is outside the permissible unicode range.
-function prohibited(code) {
-  return (code >= 0xd800 && code <= 0xdfff) || code > 0x10ffff
-}
-
-// Check if `character` is disallowed.
-function disallowed(code) {
-  return (
-    (code >= 0x0001 && code <= 0x0008) ||
-    code === 0x000b ||
-    (code >= 0x000d && code <= 0x001f) ||
-    (code >= 0x007f && code <= 0x009f) ||
-    (code >= 0xfdd0 && code <= 0xfdef) ||
-    (code & 0xffff) === 0xffff ||
-    (code & 0xffff) === 0xfffe
-  )
 }
 
 
