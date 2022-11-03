@@ -14,6 +14,16 @@ object-assign
 */
 
 /*!
+ * 
+ *               jsPDF AutoTable plugin v3.5.25
+ *
+ *               Copyright (c) 2022 Simon Bengtsson, https://github.com/simonbengtsson/jsPDF-AutoTable
+ *               Licensed under the MIT License.
+ *               http://opensource.org/licenses/mit-license
+ *
+ */
+
+/*!
  * Determine if an object is a Buffer
  *
  * @author   Feross Aboukhadijeh <https://feross.org>
@@ -27,51 +37,6 @@ object-assign
  * @license  MIT
  */
 
-/*!
- * html2canvas 1.4.1 <https://html2canvas.hertzen.com>
- * Copyright (c) 2022 Niklas von Hertzen <https://hertzen.com>
- * Released under MIT License
- */
-
-/*! *****************************************************************************
-    Copyright (c) Microsoft Corporation.
-
-    Permission to use, copy, modify, and/or distribute this software for any
-    purpose with or without fee is hereby granted.
-
-    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-    PERFORMANCE OF THIS SOFTWARE.
-    ***************************************************************************** */
-
-/*! ./browser */
-
-/*! ./functions */
-
-/*! ./html */
-
-/*! ./image */
-
-/*! ./js/init */
-
-/*! ./json */
-
-/*! ./modal */
-
-/*! ./pdf */
-
-/*! ./print */
-
-/*! ./raw-html */
-
-/*! ./sass/index.scss */
-
-/*! ./src/index.js */
-
 /*! @preserve
  * numeral.js
  * version : 2.0.6
@@ -82,65 +47,7 @@ object-assign
 
 /*! ExcelJS 21-08-2021 */
 
-/*! exports provided: addWrapper, capitalizePrint, collectStyles, addHeader, cleanUp, isRawHTML */
-
-/*! exports provided: default */
-
-/*! no static exports found */
-
 /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
-
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-
-/*!***********************!*\
-  !*** ./src/js/pdf.js ***!
-  \***********************/
-
-/*!************************!*\
-  !*** ./src/js/html.js ***!
-  \************************/
-
-/*!************************!*\
-  !*** ./src/js/init.js ***!
-  \************************/
-
-/*!************************!*\
-  !*** ./src/js/json.js ***!
-  \************************/
-
-/*!*************************!*\
-  !*** ./src/js/image.js ***!
-  \*************************/
-
-/*!*************************!*\
-  !*** ./src/js/modal.js ***!
-  \*************************/
-
-/*!*************************!*\
-  !*** ./src/js/print.js ***!
-  \*************************/
-
-/*!***************************!*\
-  !*** ./src/js/browser.js ***!
-  \***************************/
-
-/*!****************************!*\
-  !*** ./src/js/raw-html.js ***!
-  \****************************/
-
-/*!****************************!*\
-  !*** multi ./src/index.js ***!
-  \****************************/
-
-/*!*****************************!*\
-  !*** ./src/js/functions.js ***!
-  \*****************************/
-
-/*!*****************************!*\
-  !*** ./src/sass/index.scss ***!
-  \*****************************/
 
 /**
  * @license
