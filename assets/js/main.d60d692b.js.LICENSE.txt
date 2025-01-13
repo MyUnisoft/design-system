@@ -430,7 +430,3 @@ prismjs/prism.js:
  * @author	owenm    <owen23355@gmail.com>
  * @license MIT
  */
-
-//! moment.js
-
-//! moment.js locale configuration
